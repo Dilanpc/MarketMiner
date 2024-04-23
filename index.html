@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Page</title>
+    <style>
+        header{
+            margin-left: 20px;
+        }
+        body{
+            margin: 0px;
+        }
+        .product{
+            background-color: lightgrey;
+            border-color: black;
+            border-style: solid;
+            border-width: 2px;
+            width: 50%;
+            margin: auto;
+            margin-bottom: 10px;
+            padding: 5px;
+            padding-left: 20px;
+            border-radius: 10px;
+        }
+
+        footer{
+            background-color: dimgray;
+            margin: 0px;
+            padding: 1px;
+            padding-left: 50px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Online store</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Products</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+        <h2 id="current-date">date</h2>
+        <script>
+            document.getElementById("current-date").textContent = new Date().toLocaleDateString();
+        </script>
+    </header>
+
+    <main>
+        <section class="product">
+            <section class="product-header">
+                <h2>Product 1</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam, nunc id luctus aliquet, mauris lorem ullamcorper nunc, id semper lorem turpis et nunc.</p>
+            </section>
+        
+
+            <section class="product-details">
+                <h2>Product Details</h2>
+                <ul>
+                    <li class="price">Price: $99.99</li>
+                    <li class="color">Color: Green</li>
+                    <li class="size">Size: Medium</li>
+                    <li class="availability">Availability: In Stock</li>
+                </ul>
+            </section>
+
+            <section class="product-reviews">
+                <h2>Customer Reviews</h2>
+                <ul>
+                    <li>
+                        <h3>John Doe</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam, nunc id luctus aliquet, mauris lorem ullamcorper nunc, id semper lorem turpis et nunc.</p>
+                    </li>
+                    <li>
+                        <h3>Jane Smith</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam, nunc id luctus aliquet, mauris lorem ullamcorper nunc, id semper lorem turpis et nunc.</p>
+                    </li>
+                </ul>
+            </section>
+        </section>
+
+        <section class="product">
+            <section class="product-header">
+                <h2>Product 2</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam, nunc id luctus aliquet, mauris lorem ullamcorper nunc, id semper lorem turpis et nunc.</p>
+            </section>
+        
+
+            <section class="product-details">
+                <h2>Product Details</h2>
+                <ul>
+                    <li class="price">Price: $199.99</li>
+                    <li class="color">Color: Blue</li>
+                    <li class="size">Size: Large</li>
+                    <li class="availability">Availability: In Stock</li>
+                </ul>
+            </section>
+
+            <section class="product-reviews">
+                <h2>Customer Reviews</h2>
+                <ul>
+                    <li>
+                        <h3>John Doe</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam, nunc id luctus aliquet, mauris lorem ullamcorper nunc, id semper lorem turpis et nunc.</p>
+                    </li>
+                    <li>
+                        <h3>Jane Smith</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam, nunc id luctus aliquet, mauris lorem ullamcorper nunc, id semper lorem turpis et nunc.</p>
+                    </li>
+                </ul>
+            </section>
+        </section>
+
+        <section class="product">
+            <section class="product-header">
+                <h2>Product 3</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam, nunc id luctus aliquet, mauris lorem ullamcorper nunc, id semper lorem turpis et nunc.</p>
+            </section>
+        
+
+            <section class="product-details">
+                <h2>Product Details</h2>
+                <ul>
+                    <li class="price">Price: $500.99</li>
+                    <li class="color">Color: Black</li>
+                    <li class="size">Size: Small</li>
+                    <li class="availability">Availability: In Stock</li>
+                </ul>
+            </section>
+
+            <section class="product-reviews">
+                <h2>Customer Reviews</h2>
+                <ul>
+                    <li>
+                        <h3>John Doe</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam, nunc id luctus aliquet, mauris lorem ullamcorper nunc, id semper lorem turpis et nunc.</p>
+                    </li>
+                    <li>
+                        <h3>Jane Smith</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam, nunc id luctus aliquet, mauris lorem ullamcorper nunc, id semper lorem turpis et nunc.</p>
+                    </li>
+                </ul>
+            </section>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2022 Your Company. All rights reserved.</p>
+    </footer>
+</body>
+</html>
