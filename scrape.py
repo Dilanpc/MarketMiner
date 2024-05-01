@@ -36,11 +36,13 @@ class ProductCard():
     
     def get_price(self):
         try:
-            self.price = self.tag.find(class_="andes-money-amount__fraction").text
+            self.price_txt = self.tag.find(class_="andes-money-amount__fraction").text
+            self._decode_price()
             return self.price
         except AttributeError:
+            print("No se encontró el precio")
             return None
-    
+
     def get_link(self):
         try:
             self.link = self.tag.find(class_="ui-search-link").get("href")
@@ -48,9 +50,10 @@ class ProductCard():
         except AttributeError:
             return None
     
+    def _decode_price(self):
+        self.price = int(self.price_txt.replace(".", ""))
+        return self.price
         
-
-
 
 # pensado para obtener los productos de MercadoLibre por ahora
 class Products(Page):
@@ -78,10 +81,25 @@ class Products(Page):
         except Exception as e:
             print(e, "No se encontraron productos")
             return None
-        
+    
     def print_products(self):
+        if not self.products:
+            print("No se encontraron productos")
+            return None
+        
+        #Buscar cadena más larga para ajustar el tamaño de la columna
+        largest = len(self.products[0].name)
         for product in self.products:
-            print(product.name, "->", product.price)
+            if len(product.name) > largest:
+                largest = len(product.name)
+
+        #Imprimir productos con precio
+        for product in self.products:
+            print(product.name + "."*(largest - len(product.name)), "->", product.price)
+
+    
+    def average_price(self):
+        return sum([int(product.price) for product in self.products]) / len(self.products)
         
 
 
@@ -89,5 +107,5 @@ class Products(Page):
 if __name__ == "__main__":
     page = Products()
 
-    page.search_product("computadores")
+    page.search_product("iphone 11")
     page.print_products()
