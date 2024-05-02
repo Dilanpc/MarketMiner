@@ -23,18 +23,18 @@ class ProductCard():
         self.define_product()
     
     def define_product(self):
-        self.get_name()
-        self.get_price()
-        self.get_link()
+        self._compute_name()
+        self._compute_price()
+        self._compute_link()
 
-    def get_name(self):
+    def _compute_name(self):
         try:
             self.name = self.tag.find(class_="ui-search-item__title").text
             return self.name
         except AttributeError:
             return None
     
-    def get_price(self):
+    def _compute_price(self):
         try:
             self.price_txt = self.tag.find(class_="andes-money-amount__fraction").text
             self._decode_price()
@@ -43,7 +43,7 @@ class ProductCard():
             print("No se encontró el precio")
             return None
 
-    def get_link(self):
+    def _compute_link(self):
         try:
             self.link = self.tag.find(class_="ui-search-link").get("href")
             return self.link
@@ -53,6 +53,14 @@ class ProductCard():
     def _decode_price(self):
         self.price = int(self.price_txt.replace(".", ""))
         return self.price
+    
+    #Getters
+    def get_name(self):
+        return self.name
+    def get_price(self):
+        return self.price
+    def get_link(self):
+        return self.link
         
 
 # pensado para obtener los productos de MercadoLibre por ahora
@@ -61,12 +69,24 @@ class Products(Page):
         super().__init__(link)
         self.page_name = "MercadoLibre"
         self.products = []
+        self.names = []
+        self.prices = []
     
     def search_product(self, product: str):
-        self.product = product
+        self.product_name = product
         self.link = f"https://listado.mercadolibre.com.co/{product}"
         super().__init__(self.link)
         self.get_products()
+        self._compute_names()
+        self._compute_prices()
+
+    def _compute_prices(self):
+        for product in self.products:
+            self.prices.append(product.price)
+
+    def _compute_names(self):
+        for product in self.products:
+            self.names.append(product.name)
 
     def get_products(self):
         try:
@@ -100,7 +120,8 @@ class Products(Page):
     
     def average_price(self):
         return sum([int(product.price) for product in self.products]) / len(self.products)
-        
+    
+
 
 
 
@@ -109,3 +130,4 @@ if __name__ == "__main__":
 
     page.search_product("iphone 11")
     page.print_products()
+    print(page.average_price())
