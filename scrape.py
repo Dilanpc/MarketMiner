@@ -18,8 +18,11 @@ class Page(BeautifulSoup):
 
 # Recibe un tag que continene la información de un producto para crear un objeto con los datos del procuto y facilitar su acceso
 class ProductCard():
-    def __init__(self, tag: BeautifulSoup) -> None:
+    def __init__(self, tag: BeautifulSoup, class_name, class_price, class_link) -> None:
         self.tag = tag
+        self._class_name = class_name
+        self._class_price = class_price
+        self._class_link = class_link
         self.define_product()
     
     def define_product(self):
@@ -29,14 +32,14 @@ class ProductCard():
 
     def _compute_name(self):
         try:
-            self.name = self.tag.find(class_="ui-search-item__title").text
+            self.name = self.tag.find(class_=self._class_name).text
             return self.name
         except AttributeError:
             return None
     
     def _compute_price(self):
         try:
-            self.price_txt = self.tag.find(class_="andes-money-amount__fraction").text
+            self.price_txt = self.tag.find(class_=self._class_price).text
             self._decode_price()
             return self.price
         except AttributeError:
@@ -45,7 +48,7 @@ class ProductCard():
 
     def _compute_link(self):
         try:
-            self.link = self.tag.find(class_="ui-search-link").get("href")
+            self.link = self.tag.find(class_=self._class_link).get("href")
             return self.link
         except AttributeError:
             return None
@@ -66,19 +69,19 @@ class ProductCard():
         return f"{self.name} -> {self.price}"
         
 
-# pensado para obtener los productos de MercadoLibre por ahora
+
 class Products(Page):
     def __init__(self) -> None:
-        self.page_name = "MercadoLibre"
+        self.page_name = ""
+        self.link = ""
         self.products = []
         self.names = []
         self.prices = []
     
-    def search_product(self, product: str):
-        self.product_name = product
-        self.link = f"https://listado.mercadolibre.com.co/{product}"
+    def search_product(self, link: str):
+        self.link = link
         super().__init__(self.link)
-        self.get_products()
+        self._compute_products()
         self._compute_names()
         self._compute_prices()
 
@@ -90,19 +93,8 @@ class Products(Page):
         for product in self.products:
             self.names.append(product.name)
 
-    def get_products(self):
-        try:
-            product_section: BeautifulSoup = self.find(class_="ui-search-layout")
-            card_list = product_section.find_all(class_="ui-search-layout__item")
-
-            for card in card_list: #Convierte todos los tags en objetos ProductCard
-                self.products.append(ProductCard(card))
-
-            return self.products
-
-        except Exception as e:
-            print(e, "No se encontraron productos")
-            return None
+    def compute_products(self): # Cada página tiene una estructura diferente, por lo que se debe sobreescribir
+        pass
     
     def print_products(self):
         if not self.products:
@@ -125,10 +117,46 @@ class Products(Page):
     
 
 
+class MercadoLibre(Products):
+    def __init__(self) -> None:
+        super().__init__()
+        self.page_name = "MercadoLibre"
+        self.__CARD_DATA = ["ui-search-item__title", "andes-money-amount__fraction", "ui-search-link"]
+
+
+    def search_product(self, product: str):
+        super().search_product(f"https://listado.mercadolibre.com.co/{product}")
+
+    def _compute_products(self):
+        try:
+            product_section: BeautifulSoup = self.find(class_="ui-search-layout")
+            card_list = product_section.find_all(class_="ui-search-layout__item")
+
+            for card in card_list: #Convierte todos los tags en objetos ProductCard
+                self.products.append(ProductCard(card, *self.__CARD_DATA))
+
+            return self.products
+
+        except Exception as e:
+            print(e, "No se encontraron productos")
+            return None
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
-    page = Products()
+    page = MercadoLibre()
 
     page.search_product("iphone 15")
     page.print_products()
