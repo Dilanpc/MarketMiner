@@ -61,12 +61,14 @@ class ProductCard():
         return self.price
     def get_link(self):
         return self.link
+    
+    def __str__(self) -> str:
+        return f"{self.name} -> {self.price}"
         
 
 # pensado para obtener los productos de MercadoLibre por ahora
 class Products(Page):
-    def __init__(self, link="https://www.mercadolibre.com.co/") -> None:
-        super().__init__(link)
+    def __init__(self) -> None:
         self.page_name = "MercadoLibre"
         self.products = []
         self.names = []
@@ -128,6 +130,14 @@ class Products(Page):
 if __name__ == "__main__":
     page = Products()
 
-    page.search_product("iphone 11")
+    page.search_product("iphone 15")
     page.print_products()
-    print(page.average_price())
+    print("Promedio: ", page.average_price())
+
+    maximo = page.products[0]
+    for product in page.products:
+        if product.price > maximo.price:
+            maximo = product
+
+    print(maximo)
+    print(maximo.link)
