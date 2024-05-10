@@ -77,23 +77,21 @@ class Products(Page):
         self.products = []
         self.names = []
         self.prices = []
+        self.links = []
     
     def search_product(self, link: str):
         self.link = link
         super().__init__(self.link)
         self._compute_products()
-        self._compute_names()
-        self._compute_prices()
+        self._compute_info()
 
-    def _compute_prices(self):
+    def _compute_info(self):
         for product in self.products:
             self.prices.append(product.price)
-
-    def _compute_names(self):
-        for product in self.products:
             self.names.append(product.name)
+            self.links.append(product.link)
 
-    def compute_products(self): # Cada página tiene una estructura diferente, por lo que se debe sobreescribir
+    def _compute_products(self): # Cada página tiene una estructura diferente, por lo que se debe sobreescribir
         pass
     
     def print_products(self):
