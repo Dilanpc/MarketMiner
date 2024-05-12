@@ -89,7 +89,7 @@ class ProductCard():
                 print(section)
                 raise ValueNotFoundByClass("Se encontraron varios links")
             
-            self.link = section[0].text
+            self.link = section[0].get('href')
             return self.name
         except Exception as e:
             print(e, "No se pudo obtener el link")
