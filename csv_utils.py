@@ -1,4 +1,8 @@
 import csv
+try:
+    import pandas as pd
+except ImportError:
+    pass
 
 class Csv():
     def __init__(self, file) -> None:
@@ -52,6 +56,10 @@ class Csv():
     
     def get_column(self, index) -> list:
         return [fila[index] for fila in self.matrix]
+    
+    def get_dataframe(self):
+        data = pd.DataFrame(self.matrix[1:], columns=self.matrix[0])
+        return data
 
     def __str__(self) -> str:
         return str(self.matrix)
