@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
+import datetime
+import csv_utils as csv
 
 class ValueNotFoundByClass(Exception):
     pass
@@ -162,6 +164,41 @@ class Products(Page):
     def _compute_one_product(self, *args): # Cada página tiene una estructura diferente, por lo que se debe sobreescribir
         pass
     
+    def make_report(self, file_name:str, link_file_name:str=None):
+        # Crea un archivo csv con los productos encontrados
+        file = csv.Csv(file_name)
+        fecha_actual = datetime.datetime.now().strftime("%Y-%m-%d")
+
+        if link_file_name != None:
+            link_file = csv.Csv(link_file_name)
+
+        if len(file) == 0:
+            # Si el archivo está vacío, se crean los productos a rastrear
+            matriz = [["Nombres", f"Precio {fecha_actual}"]] + [[name, price] for name, price in zip(page.names, page.prices)] # [[Nombres, fecha], [name1, precio1], [name2, precio2], ...]
+            file.write(matriz)
+
+            if link_file_name != None:
+                link_file.write([["Nombres", f"Link {fecha_actual}"]] + [[name, link] for name, link in zip(page.names, page.links)])
+
+        else:
+            #Se agrega una nueva columna con los precios actuales
+            column_names = file.get_column(0)
+            column_to_add = [f"Precio {fecha_actual}"] + ["N/A"] * len(column_names)
+            column_links = [f"link {fecha_actual}"] + ["N/A"] * len(column_names)
+            #Se busca si los nombres de los productos que ya están en el archivo
+            for i in range(1, len(column_names)): # Se inicia desde el segundo porque el primero es el nombre de la columna
+                if column_names[i] in self.names:
+                    index = self.names.index(column_names[i]) # Obtiene el índice del nombre en la lista de nombres
+                    # Se ubica el precio y link en la misma posición que el nombre
+                    column_to_add[i] = self.prices[index]
+                    column_links[i] = self.links[index]
+            
+            # Escribir datos en el archivo
+            file.add_column(column_to_add)
+            if link_file_name != None:
+                link_file.add_column(column_links)
+
+
     def print_products(self):
         if not self.products:
             print("No se encontraron productos")
@@ -176,10 +213,17 @@ class Products(Page):
         #Imprimir productos con precio
         for product in self.products:
             print(product.name + "."*(largest - len(product.name)), "->", product.price)
-
+    
+    def clean_up(self):
+        self.products = []
+        self.names = []
+        self.prices = []
+        self.links = []
+        self.link = ""
     
     def average_price(self):
         return sum([int(product.price) for product in self.products]) / len(self.products)
+    
     
 
 
@@ -238,14 +282,16 @@ class MercadoLibre(Products):
 if __name__ == "__main__":
     page = MercadoLibre()
     
-    page.search_products("Computador")
+    page.search_products("computador")
     page.print_products()
 
-    product = page.get_product_by_link("https://www.mercadolibre.com.co/all-in-one-hp-24-cb0003la-amd-ryzen-3-8-gb-256-gb-238/p/MCO32669085")
-    print(product.name)
-    print(product.price)
-    print(product.link)
-
+    page.make_report("computadorReport.csv", "computadorLinks.csv")
     
+    page.clean_up()
+
+    page.search_products("iphone 15")
+    page.print_products()
+
+    page.make_report("iphoneReport.csv", "iphoneLinks.csv")
 
     
