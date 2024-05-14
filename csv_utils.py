@@ -1,4 +1,5 @@
 import csv
+import os
 try:
     import pandas as pd
 except ImportError:
@@ -14,6 +15,10 @@ class Csv():
 
     def read(self, file=None) -> list:
         if file == None: file = self.file
+
+        if not os.path.exists(file):
+            with open(file, 'w') as archivo_csv:
+                pass # Crea el archivo si no existe
 
         with open(file, 'r') as archivo_csv:
             lector = csv.reader(archivo_csv)
@@ -72,3 +77,5 @@ class Csv():
     def __len__(self) -> int:
         return len(self.matrix)
     
+if __name__ == "__main__":
+    file = Csv("noExiste.csv")
