@@ -4,6 +4,8 @@ try:
 except ImportError:
     pass
 
+
+# Maneja archivos csv como una matriz
 class Csv():
     def __init__(self, file) -> None:
         self.file: str = file
