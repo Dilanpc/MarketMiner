@@ -76,6 +76,3 @@ class Csv():
 
     def __len__(self) -> int:
         return len(self.matrix)
-    
-if __name__ == "__main__":
-    file = Csv("noExiste.csv")
