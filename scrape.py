@@ -285,13 +285,18 @@ if __name__ == "__main__":
     page.search_products("computador")
     page.print_products()
 
-    page.make_report("computadorReport.csv", "computadorLinks.csv")
+    page.make_report("reports/computadorReport.csv", "reports/computadorLinks.csv")
     
     page.clean_up()
 
     page.search_products("iphone 15")
     page.print_products()
 
-    page.make_report("iphoneReport.csv", "iphoneLinks.csv")
+    page.make_report("reports/iphoneReport.csv", "reports/iphoneLinks.csv")
 
-    
+    page.clean_up()
+
+    page.search_products("impresora 3d")
+    page.print_products()
+
+    page.make_report("reports/impresoraReport.csv", "reports/impresoraLinks.csv")
