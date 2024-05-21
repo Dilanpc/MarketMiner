@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import datetime
 import csv_utils as csv
+import pandas as pd
 
 class ValueNotFoundByClass(Exception):
     pass
@@ -224,7 +225,13 @@ class Products(Page):
     def average_price(self):
         return sum([int(product.price) for product in self.products]) / len(self.products)
     
+    def get_dataframe(self):
+        data = pd.DataFrame({"Nombres": self.names, "Precios": self.prices, "Links": self.links})
+        return data
     
+    def get_dataframe_report(self, file_name:str):
+        file = csv.Csv(file_name)
+        return file.get_dataframe()
 
 
 class MercadoLibre(Products):
