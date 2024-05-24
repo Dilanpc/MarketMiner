@@ -110,9 +110,12 @@ class ProductCard():
         # Filtrar los tags que no contienen las clases excluidas
         filtered = []
         for tag in result:
-            if any(exc in tag['class'] for exc in excluded):
-                continue
-            filtered.append(tag)
+            if not any(exc in tag['class'] for exc in excluded):
+                filtered.append(tag)
+
+        if len(filtered) == 0:
+            raise ValueNotFoundByClass(f"No se encontró la clase {class_}")
+
         return filtered
     
     def __decode_price(self):
@@ -140,6 +143,9 @@ class Products(Page):
         self.names = []
         self.prices = []
         self.links = []
+
+        # Se incluyen las clases para istanciar los objetos ProductCard
+        self._CARD_DATA = []
     
     def _enter_webpage(self, link):
         self.link = link
@@ -202,7 +208,7 @@ class Products(Page):
 
     def print_products(self):
         if not self.products:
-            print("No se encontraron productos")
+            print("No hay productos")
             return None
         
         #Buscar cadena más larga para ajustar el tamaño de la columna
@@ -238,7 +244,14 @@ class MercadoLibre(Products):
     def __init__(self) -> None:
         super().__init__()
         self.page_name = "MercadoLibre"
-        self.__CARD_DATA = [["ui-search-item__title"], ["ui-search-price ui-search-price--size-medium", "andes-money-amount", "andes-money-amount__fraction"], ["ui-search-item__group__element ui-search-link__title-card ui-search-link"], [], ["ui-search-price__original-value"], []]
+        self.__CARD_DATA = [
+            ["ui-search-item__title"], # Clase para nombre
+            ["ui-search-price ui-search-price--size-medium","andes-money-amount", "andes-money-amount__fraction"], # Clases para precio
+            ["ui-search-item__group__element ui-search-link__title-card ui-search-link"], # Clase para link
+            [], # Clases excluidas para nombre
+            ["ui-search-price__original-value"], # Clases excluidas para precio
+            [] # Clases excluidas para link
+        ]
 
 
     def search_products(self, product: str):
@@ -255,8 +268,6 @@ class MercadoLibre(Products):
         product = ProductCard(section, CLASS_NAME, CLASS_PRICE, exc_class_price=EXCLUDED_CLASS_PRICE)
         product.link = link
         return product
-
-
 
     def _compute_products(self):
         try:
@@ -275,6 +286,32 @@ class MercadoLibre(Products):
 
 
 
+class Exito(Products):
+    def __init__(self):
+        super().__init__()
+        self.page_name = "Exito"
+        #                      Clase para nombre                 Clase para precio                 Clase para link
+        self._CARD_DATA = [["link_fs-link__J1sGD"], ["ProductPrice_container__price__XmMWA"], ["link_fs-link__J1sGD"]]
+
+    def search_products(self, product: str):
+        super().search_products(f"https://www.exito.com/s?q={product}")
+
+    def _compute_products(self):
+        try:
+            product_section: BeautifulSoup = self.find(class_="product-grid_fs-product-grid___qKN2")
+            card_list = product_section.find_all(class_="product-card-no-alimentos_fsProductCardNoAlimentos__zw867")
+            
+
+            for card in card_list: #Convierte todos los tags en objetos ProductCard
+                self.products.append(ProductCard(card, *self._CARD_DATA))
+
+            return self.products
+
+        except Exception as e:
+            print(e, "No se encontraron productos")
+            return None
+    
+
 
 
 
@@ -287,23 +324,11 @@ class MercadoLibre(Products):
 
 
 if __name__ == "__main__":
-    page = MercadoLibre()
-    
-    page.search_products("computador")
+    page = Exito()
+    page.search_products("tv")
+
+    with open("paginaExito.txt", 'w', encoding='utf-8') as file:
+        file.write(page.prettify())
+
+
     page.print_products()
-
-    page.make_report("reports/computadorReport.csv", "reports/computadorLinks.csv")
-    
-    page.clean_up()
-
-    page.search_products("iphone 15")
-    page.print_products()
-
-    page.make_report("reports/iphoneReport.csv", "reports/iphoneLinks.csv")
-
-    page.clean_up()
-
-    page.search_products("impresora 3d")
-    page.print_products()
-
-    page.make_report("reports/impresoraReport.csv", "reports/impresoraLinks.csv")
