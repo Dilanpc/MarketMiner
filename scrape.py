@@ -175,11 +175,11 @@ class Products(Page):
 
         if len(file) == 0:
             # Si el archivo está vacío, se crean los productos a rastrear
-            matriz = [["Nombres", f"Precio {fecha_actual}"]] + [[name, price] for name, price in zip(page.names, page.prices)] # [[Nombres, fecha], [name1, precio1], [name2, precio2], ...]
+            matriz = [["Nombres", f"Precio {fecha_actual}"]] + [[name, price] for name, price in zip(self.names, self.prices)] # [[Nombres, fecha], [name1, precio1], [name2, precio2], ...]
             file.write(matriz)
 
             if link_file_name != None:
-                link_file.write([["Nombres", f"Link {fecha_actual}"]] + [[name, link] for name, link in zip(page.names, page.links)])
+                link_file.write([["Nombres", f"Link {fecha_actual}"]] + [[name, link] for name, link in zip(self.names, self.links)])
 
         else:
             #Se agrega una nueva columna con los precios actuales
