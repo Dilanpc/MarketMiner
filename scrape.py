@@ -6,7 +6,7 @@ import time
 import pandas as pd
 import csv_utils as csv
 
-class ValueNotFoundByClass(Exception):
+class ValueNotFoundByAttr(Exception):
     pass
 
 
@@ -31,14 +31,14 @@ class Page(BeautifulSoup):
 
 # Recibe un tag que continene la información de un producto para crear un objeto con los datos del procuto y facilitar su acceso
 class ProductCard():
-    def __init__(self, tag: BeautifulSoup, class_name:list=None, class_price:list=None, class_link:list=None, exc_class_name:list=None, exc_class_price:list=None, exc_class_link:list=None) -> None:
+    def __init__(self, tag: BeautifulSoup, attrs_name:list[dict]=None, attrs_price:list[dict]=None, attrs_link:list[dict]=None, exc_attrs_name:dict=None, exc_attrs_price:dict=None, exc_attrs_link:dict=None) -> None:
         self.tag = tag
-        self._class_name = class_name
-        self._class_price = class_price
-        self._class_link = class_link
-        self._exc_class_name = exc_class_name
-        self._exc_class_price = exc_class_price
-        self._exc_class_link = exc_class_link
+        self._attrs_name = attrs_name
+        self._attrs_price = attrs_price
+        self._attrs_link = attrs_link
+        self._exc_attrs_name = exc_attrs_name
+        self._exc_attrs_price = exc_attrs_price
+        self._exc_attrs_link = exc_attrs_link
         self.name = ""
         self.price_txt = ""
         self.price = -1
@@ -51,18 +51,18 @@ class ProductCard():
         self._compute_link()
 
     def _compute_name(self):
-        if self._class_name == None:
+        if self._attrs_name == None:
             self.name = "Sin nombre"
             return self.name
         
         try:
-            #Se busca el tag de siguiendo el orden de las clases especificadas
+            #Se busca el tag de siguiendo el orden de los atributos especificadas
             section:list[BeautifulSoup] = [self.tag]
-            for i in range(len(self._class_name)):
-                section = self._search_class_in_list(section, self._class_name[i], self._exc_class_name)
+            for attr in self._attrs_name:
+                section = self._search_attrs_in_list(section, attr, self._exc_attrs_name)
 
             if len(section) > 1:
-                raise ValueNotFoundByClass("Se encontraron varios nombres")
+                raise ValueNotFoundByAttr("Se encontraron varios nombres")
             
             self.name = section[0].text
             return self.name
@@ -71,18 +71,18 @@ class ProductCard():
             return ""
     
     def _compute_price(self):
-        if self._class_price == None:
+        if self._attrs_price == None:
             self.price = "Sin precio"
             return self.price
 
         try:
             #Se busca el tag de siguiendo el orden de las clases especificadas
             section:list[BeautifulSoup] = [self.tag]
-            for i in range(len(self._class_price)):
-                section = self._search_class_in_list(section, self._class_price[i], self._exc_class_price)
+            for attr in self._attrs_price:
+                section = self._search_class_in_list(section, attr, self._exc_attrs_price)
 
             if len(section) > 1:
-                raise ValueNotFoundByClass("Se encontraron varios precios")
+                raise ValueNotFoundByAttr("Se encontraron varios precios")
             
             self.price_txt = section[0].text
             self.__decode_price()
@@ -92,19 +92,19 @@ class ProductCard():
             return -1
 
     def _compute_link(self):
-        if self._class_link == None:
+        if self._attrs_link == None:
             self.link = "Sin link"
             return self.link
         
         try:
             #Se busca el tag de siguiendo el orden de las clases especificadas
             section:list[BeautifulSoup] = [self.tag]
-            for i in range(len(self._class_link)):
-                section = self._search_class_in_list(section, self._class_link[i], self._exc_class_link)
+            for attr in self._attrs_link:
+                section = self._search_class_in_list(section, attr, self._exc_attrs_link)
 
             if len(section) > 1:
                 print(section)
-                raise ValueNotFoundByClass("Se encontraron varios links")
+                raise ValueNotFoundByAttr("Se encontraron varios links")
             
             self.link = section[0].get('href')
             return self.name
@@ -113,27 +113,36 @@ class ProductCard():
             return ""
         
 
-    def _search_class_in_list(self, sections:list, class_, excluded:list=None):
-        if excluded == None:
-            excluded = []
-        # Obtener todos los tags con la clase especificada en cada section
+    def _search_attrs_in_list(self, sections:list, attrs:dict, excluded:dict=None):
+        
+        # Obtener todos los tags con los atributos especificados en cada section
         result = []
         for i in range(len(sections)):
-            result = result + sections[i].find_all(class_=class_)
+            result = result + sections[i].find_all(attrs=attrs)
             
         # Filtrar los tags que no contienen las clases excluidas
         filtered = []
+        if excluded == None:
+            excluded = {}
+            filtered = result
         for tag in result:
-            if not any(exc in tag['class'] for exc in excluded):
-                filtered.append(tag)
+            # iterar en cada atributo excluido
+            for exc in excluded:
+                if exc not in tag.attrs or tag[exc] != excluded[exc]:
+                    filtered.append(tag)  # Si no se encuentra el atributo excluido, se agrega a la lista de tags filtrados
 
         if len(filtered) == 0:
-            raise ValueNotFoundByClass(f"No se encontró la clase {class_}")
+            raise ValueNotFoundByAttr(f"No se encontró ningún tag con los atributos {attrs} y sin {excluded}")
 
         return filtered
+
     
     def __decode_price(self):
-        self.price = int(self.price_txt.replace(".", ""))
+        self.price = ""
+        for c in self.price_txt:
+            if c.isdigit():
+                self.price += c
+        self.price = int(self.price)
         return self.price
     
     #Getters
@@ -301,7 +310,7 @@ class MercadoLibre(Products):
 
 class Exito(Products):
     def __init__(self):
-        super().__init__()
+        super().__init__(use_selenium=True)
         self.page_name = "Exito"
         #                      Clase para nombre                 Clase para precio                 Clase para link
         self._CARD_DATA = [["link_fs-link__J1sGD"], ["ProductPrice_container__price__XmMWA"], ["link_fs-link__J1sGD"]]
@@ -330,11 +339,6 @@ class Exito(Products):
 
 
 if __name__ == "__main__":
-    page = Exito()
+    page = MercadoLibre()
     page.search_products("tv")
-
-    with open("paginaExito.txt", 'w', encoding='utf-8') as file:
-        file.write(page.prettify())
-
-
     page.print_products()
