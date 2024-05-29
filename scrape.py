@@ -1,16 +1,30 @@
 from bs4 import BeautifulSoup
 import requests
+from selenium import webdriver
 import datetime
-import csv_utils as csv
+import time
 import pandas as pd
+import csv_utils as csv
 
 class ValueNotFoundByClass(Exception):
     pass
 
+
 # Clase que recibe un link y lo convierte en un objeto BeautifulSoup para facilitar la extracción de datos
 class Page(BeautifulSoup):
-    def __init__(self, link) -> None:
-        self.html = requests.get(link).text
+    def __init__(self, link, use_selenium=False) -> None:
+        self._driver = None
+        if use_selenium:
+            service = webdriver.chrome.service.Service(executable_path="./drivers/chromedriver.exe")
+            self._driver = webdriver.Chrome(service=service)
+            self._driver.get(link)
+            time.sleep(1)
+            self.html = self._driver.page_source
+            self._driver.quit()
+
+        else:
+            self.html = requests.get(link).text
+
         super().__init__(self.html, 'lxml')
 
 
@@ -136,20 +150,19 @@ class ProductCard():
 
 
 class Products(Page):
-    def __init__(self) -> None:
+    def __init__(self, use_selenium=False) -> None:
         self.page_name = ""
         self.link = ""
         self.products = []
         self.names = []
         self.prices = []
         self.links = []
-
-        # Se incluyen las clases para istanciar los objetos ProductCard
-        self._CARD_DATA = []
+        self.SELENIUM = use_selenium
+        self._CARD_DATA = []  # Se incluyen las clases para istanciar los objetos ProductCard
     
     def _enter_webpage(self, link):
         self.link = link
-        super().__init__(link)
+        super().__init__(link, use_selenium=self.SELENIUM)
 
     def search_products(self, link: str):
         self._enter_webpage(link)
@@ -242,7 +255,7 @@ class Products(Page):
 
 class MercadoLibre(Products):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(use_selenium=False)
         self.page_name = "MercadoLibre"
         self.__CARD_DATA = [
             ["ui-search-item__title"], # Clase para nombre
@@ -311,13 +324,6 @@ class Exito(Products):
             print(e, "No se encontraron productos")
             return None
     
-
-
-
-
-
-
-
 
 
 
