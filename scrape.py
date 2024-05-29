@@ -79,7 +79,7 @@ class ProductCard():
             #Se busca el tag de siguiendo el orden de las clases especificadas
             section:list[BeautifulSoup] = [self.tag]
             for attr in self._attrs_price:
-                section = self._search_class_in_list(section, attr, self._exc_attrs_price)
+                section = self._search_attrs_in_list(section, attr, self._exc_attrs_price)
 
             if len(section) > 1:
                 raise ValueNotFoundByAttr("Se encontraron varios precios")
@@ -100,7 +100,7 @@ class ProductCard():
             #Se busca el tag de siguiendo el orden de las clases especificadas
             section:list[BeautifulSoup] = [self.tag]
             for attr in self._attrs_link:
-                section = self._search_class_in_list(section, attr, self._exc_attrs_link)
+                section = self._search_attrs_in_list(section, attr, self._exc_attrs_link)
 
             if len(section) > 1:
                 print(section)
@@ -122,13 +122,13 @@ class ProductCard():
             
         # Filtrar los tags que no contienen las clases excluidas
         filtered = []
-        if excluded == None:
+        if excluded == None or excluded == {}:
             excluded = {}
             filtered = result
         for tag in result:
             # iterar en cada atributo excluido
             for exc in excluded:
-                if exc not in tag.attrs or tag[exc] != excluded[exc]:
+                if exc not in tag.attrs or excluded[exc] not in tag[exc]:
                     filtered.append(tag)  # Si no se encuentra el atributo excluido, se agrega a la lista de tags filtrados
 
         if len(filtered) == 0:
@@ -267,12 +267,12 @@ class MercadoLibre(Products):
         super().__init__(use_selenium=False)
         self.page_name = "MercadoLibre"
         self.__CARD_DATA = [
-            ["ui-search-item__title"], # Clase para nombre
-            ["ui-search-price ui-search-price--size-medium","andes-money-amount", "andes-money-amount__fraction"], # Clases para precio
-            ["ui-search-item__group__element ui-search-link__title-card ui-search-link"], # Clase para link
-            [], # Clases excluidas para nombre
-            ["ui-search-price__original-value"], # Clases excluidas para precio
-            [] # Clases excluidas para link
+            [{"class":"ui-search-item__title"}], # Atributos para nombre
+            [{"class":"ui-search-price ui-search-price--size-medium"},{"class":"andes-money-amount"}], # Atributos para precio
+            [{"class":"ui-search-item__group__element ui-search-link__title-card ui-search-link"}], # Atribitos para link
+            {}, # Atributos excluidos para nombre
+            {"class":"ui-search-price__original-value"}, # Atributos excluidos para precio
+            {} # Atributos excluidos para link
         ]
 
 
@@ -340,5 +340,5 @@ class Exito(Products):
 
 if __name__ == "__main__":
     page = MercadoLibre()
-    page.search_products("tv")
+    page.search_products("nevera")
     page.print_products()
