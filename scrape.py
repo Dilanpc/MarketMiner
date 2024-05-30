@@ -284,10 +284,10 @@ class MercadoLibre(Products):
     
     def _compute_one_product(self, link):
         section = self.find(class_="ui-pdp-container__col col-2 mr-32")
-        CLASS_NAME = ["ui-pdp-title"]
-        CLASS_PRICE = ["ui-pdp-price__main-container", "andes-money-amount--cents-superscript", "andes-money-amount__fraction"]
-        EXCLUDED_CLASS_PRICE = ["ui-pdp-price__original-value"]
-        product = ProductCard(section, CLASS_NAME, CLASS_PRICE, exc_class_price=EXCLUDED_CLASS_PRICE)
+        ATTR_NAME = [{"class":"ui-pdp-title"}]
+        ATTR_PRICE = [{"class":"ui-pdp-price__main-container"}, {"class":"andes-money-amount--cents-superscript"}, {"class":"andes-money-amount__fraction"}]
+        EXCLUDED_ATTR_PRICE = {"class":"ui-pdp-price__original-value"}
+        product = ProductCard(section, ATTR_NAME, ATTR_PRICE, exc_attrs_price=EXCLUDED_ATTR_PRICE)
         product.link = link
         return product
 
