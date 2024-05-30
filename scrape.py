@@ -312,8 +312,14 @@ class Exito(Products):
     def __init__(self):
         super().__init__(use_selenium=True)
         self.page_name = "Exito"
-        #                      Clase para nombre                 Clase para precio                 Clase para link
-        self._CARD_DATA = [["link_fs-link__J1sGD"], ["ProductPrice_container__price__XmMWA"], ["link_fs-link__J1sGD"]]
+        self._CARD_DATA = [
+            [{"data-fs-product-card-title":"true"}], # Atributos para nombre
+            [{"class":"ProductPrice_container__price__XmMWA"}], # Atributos para precio
+            [{"data-fs-product-card-title":"true"}, {"data-testid":"product-link"}], # Atributos para link
+            {}, # Atributos excluidos para nombre
+            {}, # Atributos excluidos para precio
+            {}  # Atributos excluidos para link
+        ]
 
     def search_products(self, product: str):
         super().search_products(f"https://www.exito.com/s?q={product}")
@@ -321,11 +327,12 @@ class Exito(Products):
     def _compute_products(self):
         try:
             product_section: BeautifulSoup = self.find(class_="product-grid_fs-product-grid___qKN2")
-            card_list = product_section.find_all(class_="product-card-no-alimentos_fsProductCardNoAlimentos__zw867")
+            card_list = product_section.find_all(attrs={"data-testid":"store-product-card-content"})
             
 
             for card in card_list: #Convierte todos los tags en objetos ProductCard
                 self.products.append(ProductCard(card, *self._CARD_DATA))
+                self.products[-1].link = "https://www.exito.com" + self.products[-1].link
 
             return self.products
 
@@ -340,5 +347,22 @@ class Exito(Products):
 
 if __name__ == "__main__":
     page = MercadoLibre()
-    page.search_products("nevera")
+    
+    page.search_products("computador")
     page.print_products()
+
+    page.make_report("reports/computadorReport.csv", "reports/computadorLinks.csv")
+    
+    page.clean_up()
+
+    page.search_products("iphone 15")
+    page.print_products()
+
+    page.make_report("reports/iphoneReport.csv", "reports/iphoneLinks.csv")
+
+    page.clean_up()
+
+    page.search_products("impresora 3d")
+    page.print_products()
+
+    page.make_report("reports/impresoraReport.csv", "reports/impresoraLinks.csv")
