@@ -14,6 +14,6 @@
 
 ## Uso de selenium
 
-Algunas páginas cargaban su contenido luego de acceder a ellas, haciendo que la librería requests no fuera útil en estas páginas. Con selenium se evita este problema aunque toma más tiempo su ejecución.
+Algunas páginas cargan su contenido después de acceder a ellas, haciendo que la librería requests no sea útil en estas páginas. Con selenium se evita este problema aunque toma más tiempo su ejecución.
 
-El uso de selenium está disponible en este programa para Google Chrome. **Es necesario instalar el driver del navegador.** Puede descargarlo a través de este [link](https://googlechromelabs.github.io/chrome-for-testing/) y guardarlo en la carpeta *./drivers/*
+El uso de selenium está disponible en este programa para Google Chrome. **Es necesario instalar el driver del navegador.** Puede descargarlo a través de este [link](https://googlechromelabs.github.io/chrome-for-testing/) y guardarlo en la carpeta `./drivers/`
