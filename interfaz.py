@@ -1,4 +1,5 @@
 import tkinter as tk
+import threading
 import webbrowser
 import scrape
 
@@ -84,12 +85,19 @@ class FrameInfoShop(tk.Frame):
         if self.result != None:
             self.result.destroy()
             del self.result
+        # Continuar función en un hilo
+        t = threading.Thread(target=self.__search_thread)
+        t.start()
+
+    def __search_thread(self): # función que se ejecuta en un hilo para no detener mainloop
         txt = self.search_input.get()
         self.page.clean_up()
+        print("Buscando...")
         self.page.search_products(txt)
         self.result = FrameResult(self, self.page.get_dataframe())
         self.result.pack(fill=tk.Y, expand=True)
-
+    
+    
 
 class FrameResult(tk.Frame):
     def __init__(self, master, data): # 'data' es un dataframe de pandas
