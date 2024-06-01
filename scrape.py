@@ -15,11 +15,18 @@ class Page(BeautifulSoup):
     def __init__(self, link, use_selenium=False) -> None:
         self._driver = None
         if use_selenium:
+            options = webdriver.chrome.options.Options()
+            options.add_argument("--headless") # No abrir ventana de chrome
+            
+
             service = webdriver.chrome.service.Service(executable_path="./drivers/chromedriver.exe")
-            self._driver = webdriver.Chrome(service=service)
+            options.add_experimental_option('excludeSwitches', ['enable-logging'])
+            self._driver = webdriver.Chrome(service=service, options=options)
             self._driver.get(link)
             time.sleep(1)
             self.html = self._driver.page_source
+            with open("test.html", "w", encoding="utf-8") as file:
+                file.write(self.html)
             self._driver.quit()
 
         else:
@@ -346,23 +353,6 @@ class Exito(Products):
 
 
 if __name__ == "__main__":
-    page = MercadoLibre()
-    
-    page.search_products("computador")
+    page = Exito()
+    page.search_products("camisa")
     page.print_products()
-
-    page.make_report("reports/computadorReport.csv", "reports/computadorLinks.csv")
-    
-    page.clean_up()
-
-    page.search_products("iphone 15")
-    page.print_products()
-
-    page.make_report("reports/iphoneReport.csv", "reports/iphoneLinks.csv")
-
-    page.clean_up()
-
-    page.search_products("impresora 3d")
-    page.print_products()
-
-    page.make_report("reports/impresoraReport.csv", "reports/impresoraLinks.csv")
