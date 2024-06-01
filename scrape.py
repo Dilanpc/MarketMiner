@@ -17,7 +17,7 @@ class Page(BeautifulSoup):
         if use_selenium:
             options = webdriver.chrome.options.Options()
             options.add_argument("--headless") # No abrir ventana de chrome
-            
+            options.add_argument('log-level=2') # No mostrar mensajes de log
 
             service = webdriver.chrome.service.Service(executable_path="./drivers/chromedriver.exe")
             options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -25,8 +25,10 @@ class Page(BeautifulSoup):
             self._driver.get(link)
             time.sleep(1)
             self.html = self._driver.page_source
+            #### CONTENIDO DE PRUEBA
             with open("test.html", "w", encoding="utf-8") as file:
                 file.write(self.html)
+            ####
             self._driver.quit()
 
         else:
