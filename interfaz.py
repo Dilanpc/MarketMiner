@@ -108,7 +108,7 @@ class FrameInfoShop(tk.Frame):
         self.page.search_products(txt)
         self.__finished = True
         self.result = FrameResult(self, self.page.get_dataframe())
-        self.result.pack(fill=tk.Y, expand=True)
+        self.result.pack(fill=tk.BOTH, padx=10, expand=True)
     
     def __loading(self):
         self.load_label.pack()
@@ -151,7 +151,7 @@ class FrameResult(tk.Frame):
 
         # En inner_frame se colocarán los elementos para scrollear (está dento del canvas)
         self.inner_frame = tk.Frame(self.canvas)
-        self.canvas.create_window((0, 0), window=self.inner_frame, anchor=tk.NW)
+        self.canvas_frame = self.canvas.create_window((0, 0), window=self.inner_frame, anchor=tk.NW)
 
         self.buttons = []
         self._calculate_buttons()
@@ -159,10 +159,16 @@ class FrameResult(tk.Frame):
         self._show_buttons()
 
         self.inner_frame.bind('<Configure>', self.__on_frame_configure)
+        self.canvas.bind('<Configure>', self.__on_canvas_configure)
     
     # Actualiza el tamaño del área scrolleable, el 'event' es necesario
     def __on_frame_configure(self, event=None):
         self.canvas.configure(scrollregion=self.canvas.bbox('all'))
+
+    # Actualiza el ancho del frame dentro del canvas
+    def __on_canvas_configure(self, event=None):
+        self.canvas.itemconfig(self.canvas_frame, width=event.width)
+
 
     def _calculate_buttons(self):
         for i in range(len(self.data)):
@@ -173,7 +179,8 @@ class FrameResult(tk.Frame):
 
     def _show_buttons(self):
         for button in self.buttons:
-            button.pack(fill="x", expand=True)
+            button.pack(fill=tk.X, expand=True, padx=10, pady=1)
+        self.__on_frame_configure()
 
 
     def _go_to_link(self, link):
