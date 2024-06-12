@@ -2,6 +2,7 @@
 
 - BeautifulSoup
 - requests
+- lxml
 - pandas
 - openpyxl
 - mathplot
