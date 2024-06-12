@@ -366,3 +366,12 @@ if __name__ == "__main__":
     page.print_products()
 
     page.make_report("reports/impresoraReport.csv", "reports/impresoraLinks.csv")
+
+    page.clean_up()
+
+    page.search_products("Tarjeta gráfica")
+    page.print_products()
+
+    page.make_report("reports/tarjetaGraficaReport.csv", "reports/tarjetaGraficaLinks.csv")
+
+    page.clean_up()
