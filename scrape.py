@@ -375,3 +375,22 @@ if __name__ == "__main__":
     page.make_report("reports/tarjetaGraficaReport.csv", "reports/tarjetaGraficaLinks.csv")
 
     page.clean_up()
+
+    page.search_products("celular")
+    page.print_products()
+    page.make_report("reports/celularReport.csv", "reports/celularLinks.csv")
+
+    page.clean_up()
+
+    page.search_products("tv")
+    page.print_products()
+    page.make_report("reports/tvReport.csv", "reports/tvLinks.csv")
+
+    page.clean_up()
+
+    page.search_products("reloj")
+    page.print_products()
+
+    page.make_report("reports/relojReport.csv", "reports/relojLinks.csv")
+
+    page.clean_up()
