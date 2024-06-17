@@ -394,3 +394,27 @@ if __name__ == "__main__":
     page.make_report("reports/relojReport.csv", "reports/relojLinks.csv")
 
     page.clean_up()
+
+    page.search_products("audífonos")
+    page.print_products()
+    page.make_report("reports/audifonosReport.csv", "reports/audifonosLinks.csv")
+    
+    page.clean_up()
+
+    page.search_products("camisa")
+    page.print_products()
+    page.make_report("reports/camisaReport.csv", "reports/camisaLinks.csv")
+
+    page.clean_up()
+
+    page.search_products("zapatos")
+    page.print_products()
+    page.make_report("reports/zapatosReport.csv", "reports/zapatosLinks.csv")
+
+    page.clean_up()
+
+    page.search_products("pantalón")
+    page.print_products()
+    page.make_report("reports/pantalonReport.csv", "reports/pantalonLinks.csv")
+
+    page.clean_up()
