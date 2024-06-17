@@ -4,6 +4,7 @@ from selenium import webdriver
 import datetime
 import time
 import pandas as pd
+import threading
 import csv_utils as csv
 
 class ValueNotFoundByAttr(Exception):
@@ -346,75 +347,35 @@ class Exito(Products):
 
 
 if __name__ == "__main__":
-    page = MercadoLibre()
+
+
+    def report(search, ruta, ruta_links):
+        page = MercadoLibre()
+        page.search_products(search)
+        page.make_report(ruta, ruta_links)
+
+    threads = []
+
+    threads.append(threading.Thread(target=lambda: report("computador", "reports/computadorReport.csv", "reports/computadorLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("iphone 15", "reports/iphoneReport.csv", "reports/iphoneLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("impresora 3d", "reports/impresoraReport.csv", "reports/impresoraLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("Tarjeta gráfica", "reports/tarjetaGraficaReport.csv", "reports/tarjetaGraficaLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("celular", "reports/celularReport.csv", "reports/celularLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("tv", "reports/tvReport.csv", "reports/tvLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("reloj", "reports/relojReport.csv", "reports/relojLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("audífonos", "reports/audifonosReport.csv", "reports/audifonosLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("camisa", "reports/camisaReport.csv", "reports/camisaLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("zapatos", "reports/zapatosReport.csv", "reports/zapatosLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("pantalón", "reports/pantalonReport.csv", "reports/pantalonLinks.csv")))
+
+    porcentaje = 0
+
+    for t in threads:
+        t.start()
+
+    for t in threads:
+        t.join()
+        porcentaje += 100 / len(threads)
+        print(f"{porcentaje}% completado", end="\r")
     
-    page.search_products("computador")
-    page.print_products()
-
-    page.make_report("reports/computadorReport.csv", "reports/computadorLinks.csv")
-    
-    page.clean_up()
-
-    page.search_products("iphone 15")
-    page.print_products()
-
-    page.make_report("reports/iphoneReport.csv", "reports/iphoneLinks.csv")
-
-    page.clean_up()
-
-    page.search_products("impresora 3d")
-    page.print_products()
-
-    page.make_report("reports/impresoraReport.csv", "reports/impresoraLinks.csv")
-
-    page.clean_up()
-
-    page.search_products("Tarjeta gráfica")
-    page.print_products()
-
-    page.make_report("reports/tarjetaGraficaReport.csv", "reports/tarjetaGraficaLinks.csv")
-
-    page.clean_up()
-
-    page.search_products("celular")
-    page.print_products()
-    page.make_report("reports/celularReport.csv", "reports/celularLinks.csv")
-
-    page.clean_up()
-
-    page.search_products("tv")
-    page.print_products()
-    page.make_report("reports/tvReport.csv", "reports/tvLinks.csv")
-
-    page.clean_up()
-
-    page.search_products("reloj")
-    page.print_products()
-
-    page.make_report("reports/relojReport.csv", "reports/relojLinks.csv")
-
-    page.clean_up()
-
-    page.search_products("audífonos")
-    page.print_products()
-    page.make_report("reports/audifonosReport.csv", "reports/audifonosLinks.csv")
-    
-    page.clean_up()
-
-    page.search_products("camisa")
-    page.print_products()
-    page.make_report("reports/camisaReport.csv", "reports/camisaLinks.csv")
-
-    page.clean_up()
-
-    page.search_products("zapatos")
-    page.print_products()
-    page.make_report("reports/zapatosReport.csv", "reports/zapatosLinks.csv")
-
-    page.clean_up()
-
-    page.search_products("pantalón")
-    page.print_products()
-    page.make_report("reports/pantalonReport.csv", "reports/pantalonLinks.csv")
-
-    page.clean_up()
+    print("Finalizado")
