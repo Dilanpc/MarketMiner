@@ -5,7 +5,7 @@
 - lxml
 - pandas
 - openpyxl
-- mathplot
+- matplotlib
 - selenium
 
 ## Reportes
