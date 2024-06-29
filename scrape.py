@@ -28,6 +28,22 @@ class Page(BeautifulSoup):
 
         super().__init__(self.html, 'lxml')
 
+    def find(self, *args, **kwargs):
+        if 'attrs' in kwargs and 'etiqueta' in kwargs['attrs']:
+            etiqueta = kwargs['attrs']['etiqueta']
+            del kwargs['attrs']['etiqueta']
+            return super().find(etiqueta, *args, **kwargs)
+                
+        return super().find(*args, **kwargs)
+    
+    def find_all(self, *args, **kwargs):
+        if 'attrs' in kwargs and 'etiqueta' in kwargs['attrs']:
+            etiqueta = kwargs['attrs']['etiqueta']
+            del kwargs['attrs']['etiqueta']
+            return super().find_all(etiqueta, *args, **kwargs)
+        
+        return super().find_all(*args, **kwargs)
+
 
 
 # Recibe un tag que continene la información de un producto para crear un objeto con los datos del procuto y facilitar su acceso
@@ -69,7 +85,7 @@ class ProductCard():
             return self.name
         except Exception as e:
             print(e, "No se pudo obtener el nombre")
-            return ""
+            raise e
     
     def _compute_price(self):
         if self._attrs_price == None:
@@ -83,15 +99,15 @@ class ProductCard():
                 section = self._search_attrs_in_list(section, attr, self._exc_attrs_price)
 
             if len(section) > 1:
-                raise ValueNotFoundByAttr("Se encontraron varios precios")
+                # raise ValueNotFoundByAttr("Se encontraron varios precios en", self.name)
+                print("Se encontraron varios precios")
             
             self.price_txt = section[0].text
             self.__decode_price()
             return self.price
         except Exception as e:
-            print(e, "No se pudo obtener el precio")
-            return -1
-
+            print(e, "No se pudo obtener el precio en", self.name)
+            raise e
     def _compute_link(self):
         if self._attrs_link == None:
             self.link = "Sin link"
@@ -105,13 +121,14 @@ class ProductCard():
 
             if len(section) > 1:
                 print(section)
-                raise ValueNotFoundByAttr("Se encontraron varios links")
+                raise ValueNotFoundByAttr("Se encontraron varios links en", self.name)
             
             self.link = section[0].get('href')
             return self.name
         except Exception as e:
-            print(e, "No se pudo obtener el link")
-            return ""
+            print(e, "No se pudo obtener el link en", self.name)
+            raise e
+
         
 
     def _search_attrs_in_list(self, sections:list, attrs:dict, excluded:dict=None):
@@ -275,6 +292,14 @@ class MercadoLibre(Products):
             {"class":"ui-search-price__original-value"}, # Atributos excluidos para precio
             {} # Atributos excluidos para link
         ]
+        self.__CARD_DATA2 = [
+            [{"class":"poly-box"}],
+            [{"class":"andes-money-amount andes-money-amount--cents-superscript"}, {"class":"andes-money-amount__fraction"}],
+            [{"class":"poly-component__title"}],
+            {"class":"poly-coupon"},
+            {"class":"poly-component__buy-box"}, # No funciona
+            {}
+        ]
 
 
     def search_products(self, product: str):
@@ -302,9 +327,13 @@ class MercadoLibre(Products):
 
             return self.products
 
-        except Exception as e:
-            print(e, "No se encontraron productos")
-            return None
+        except ValueNotFoundByAttr as e:
+            print("Usando segunda estructura")
+            product_section: BeautifulSoup = self.find(class_="ui-search-layout")
+            card_list = product_section.find_all(class_="ui-search-layout__item")
+
+            for card in card_list:
+                self.products.append(ProductCard(card, *self.__CARD_DATA2))
 
 
 
@@ -376,6 +405,6 @@ if __name__ == "__main__":
     for t in threads:
         t.join()
         porcentaje += 100 / len(threads)
-        print(f"{porcentaje}% completado", end="\r")
+        print(f"{round(porcentaje)}% completado", end="\r")
     
-    print("Finalizado")
+    print("\nFinalizado")
