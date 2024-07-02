@@ -83,6 +83,8 @@ class ProductCard():
             
             self.name = section[0].text
             return self.name
+        except ValueNotFoundByAttr:
+            raise ValueNotFoundByAttr("No se encontró el nombre")
         except Exception as e:
             print(e, "No se pudo obtener el nombre")
             raise e
@@ -105,6 +107,8 @@ class ProductCard():
             self.price_txt = section[0].text
             self.__decode_price()
             return self.price
+        except ValueNotFoundByAttr:
+            raise ValueNotFoundByAttr("No se encontró el precio en", self.name)
         except Exception as e:
             print(e, "No se pudo obtener el precio en", self.name)
             raise e
@@ -125,6 +129,8 @@ class ProductCard():
             
             self.link = section[0].get('href')
             return self.name
+        except ValueNotFoundByAttr:
+            raise ValueNotFoundByAttr("No se encontró el link en", self.name)
         except Exception as e:
             print(e, "No se pudo obtener el link en", self.name)
             raise e
@@ -327,13 +333,15 @@ class MercadoLibre(Products):
 
             return self.products
 
-        except ValueNotFoundByAttr as e:
+        except ValueNotFoundByAttr:
             print("Usando segunda estructura")
             product_section: BeautifulSoup = self.find(class_="ui-search-layout")
             card_list = product_section.find_all(class_="ui-search-layout__item")
 
             for card in card_list:
                 self.products.append(ProductCard(card, *self.__CARD_DATA2))
+            
+            return self.products
 
 
 
