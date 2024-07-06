@@ -329,6 +329,14 @@ class Exito(Products):
             {}, # Atributos excluidos para precio
             {}  # Atributos excluidos para link
         ]
+        self._CARD_DATA2 = [
+            [{"class":"styles_name__qQJiK"}], # Atributos para nombre
+            [{"class":"ProductPrice_container__price__XmMWA"}], # Atributos para precio
+            [{"class":"productCard_productLinkInfo__It3J2"}], # Atributos para link
+            {}, # Atributos excluidos para nombre
+            {}, # Atributos excluidos para precio
+            {}  # Atributos excluidos para link
+        ]
 
     def search_products(self, product: str):
         super().search_products(f"https://www.exito.com/s?q={product}")
@@ -336,11 +344,11 @@ class Exito(Products):
     def _compute_products(self):
         try:
             product_section: BeautifulSoup = self.find(class_="product-grid_fs-product-grid___qKN2")
-            card_list = product_section.find_all(attrs={"data-testid":"store-product-card-content"})
+            card_list = product_section.find_all(attrs={"class":"productCard_contentInfo__CBBA7 productCard_column__Lp3OF"})
             
 
             for card in card_list: #Convierte todos los tags en objetos ProductCard
-                self.products.append(ProductCard(card, *self._CARD_DATA))
+                self.products.append(ProductCard(card, *self._CARD_DATA2))
                 self.products[-1].link = "https://www.exito.com" + self.products[-1].link
 
             return self.products
@@ -356,5 +364,5 @@ class Exito(Products):
 
 if __name__ == "__main__":
     page = Exito()
-    page.search_products("camisa")
+    page.search_products(input("Producto: "))
     page.print_products()
