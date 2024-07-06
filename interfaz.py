@@ -1,5 +1,6 @@
 import tkinter as tk
 import threading
+import time
 import webbrowser
 import scrape
 
@@ -31,8 +32,11 @@ class FrameHome(tk.Frame):
         self.frame_menu.config(bg="white")
         self.frame_menu.grid(row=0, column=0, sticky="nsew")
 
-    def show_info(self, page_name):
-        self.frame_info = FrameInfoShop(self, page_name)
+        self.frame_info = tk.Frame(self)
+
+    def show_info(self, page_name, color="white"):
+        self.frame_info.destroy()
+        self.frame_info = FrameInfoShop(self, page_name, color)
         self.frame_info.grid(row=0, column=1, sticky="nsew")
 
 
@@ -49,7 +53,8 @@ class FrameMenuShops(tk.Frame):
 
         self.info = None
 
-        self.buttons.append(tk.Button(self, text="Mercado libre", command=lambda : master.show_info("MercadoLibre")))
+        self.buttons.append(tk.Button(self, text="Mercado libre", command=lambda : master.show_info("MercadoLibre", "yellow")))
+        self.buttons.append(tk.Button(self, text="Exito", command=lambda : master.show_info("Exito", "yellow")))
 
         self._show_buttons()
 
@@ -59,20 +64,24 @@ class FrameMenuShops(tk.Frame):
 
 
 class FrameInfoShop(tk.Frame):
-    def __init__(self, master, page_name):
+    def __init__(self, master, page_name, color):
         super().__init__(master)
         self.master = master
         self.result = None
 
+        self.__BG = color
+
         self.page = None
         self.__search_web(page_name)
 
-        self.config(bg="gray")
-        self.label = tk.Label(self, text=page_name)
+        self.config(bg = self.__BG)
+        self.label = tk.Label(self, text=page_name, bg=self.__BG)
         self.label.pack()
 
         self.search_input = tk.Entry(self)
         self.search_input.pack()
+
+        self.load_label = tk.Label(self, bg=self.__BG)
 
         self.button_search = tk.Button(self, text="Buscar", command=self.search)
         self.button_search.pack()
@@ -90,12 +99,35 @@ class FrameInfoShop(tk.Frame):
         t.start()
 
     def __search_thread(self): # función que se ejecuta en un hilo para no detener mainloop
+        self.__finished = False
+        loading_thread = threading.Thread(target=self.__loading)
+        loading_thread.start()
         txt = self.search_input.get()
         self.page.clean_up()
         print("Buscando...")
         self.page.search_products(txt)
+        self.__finished = True
         self.result = FrameResult(self, self.page.get_dataframe())
-        self.result.pack(fill=tk.Y, expand=True)
+        self.result.pack(fill=tk.BOTH, padx=10, expand=True)
+    
+    def __loading(self):
+        self.load_label.pack()
+        while not self.__finished:
+            self.load_label.config(text="Cargando")
+            time.sleep(0.4)
+            if self.__finished:
+                break
+            self.load_label.config(text="Cargando.")
+            time.sleep(0.4)
+            if self.__finished:
+                break
+            self.load_label.config(text="Cargando..")
+            time.sleep(0.4)
+            if self.__finished:
+                break
+            self.load_label.config(text="Cargando...")
+            time.sleep(0.4)
+        self.load_label.pack_forget()
     
     
 
@@ -119,7 +151,7 @@ class FrameResult(tk.Frame):
 
         # En inner_frame se colocarán los elementos para scrollear (está dento del canvas)
         self.inner_frame = tk.Frame(self.canvas)
-        self.canvas.create_window((0, 0), window=self.inner_frame, anchor=tk.NW)
+        self.canvas_frame = self.canvas.create_window((0, 0), window=self.inner_frame, anchor=tk.NW)
 
         self.buttons = []
         self._calculate_buttons()
@@ -127,10 +159,16 @@ class FrameResult(tk.Frame):
         self._show_buttons()
 
         self.inner_frame.bind('<Configure>', self.__on_frame_configure)
+        self.canvas.bind('<Configure>', self.__on_canvas_configure)
     
     # Actualiza el tamaño del área scrolleable, el 'event' es necesario
     def __on_frame_configure(self, event=None):
         self.canvas.configure(scrollregion=self.canvas.bbox('all'))
+
+    # Actualiza el ancho del frame dentro del canvas
+    def __on_canvas_configure(self, event=None):
+        self.canvas.itemconfig(self.canvas_frame, width=event.width)
+
 
     def _calculate_buttons(self):
         for i in range(len(self.data)):
@@ -141,7 +179,8 @@ class FrameResult(tk.Frame):
 
     def _show_buttons(self):
         for button in self.buttons:
-            button.pack(fill="x", expand=True)
+            button.pack(fill=tk.X, expand=True, padx=10, pady=1)
+        self.__on_frame_configure()
 
 
     def _go_to_link(self, link):
