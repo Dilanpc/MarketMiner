@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
 import datetime
-import time
 import pandas as pd
 import threading
 import csv_utils as csv
@@ -21,16 +20,10 @@ class Page(BeautifulSoup):
             options.add_argument('log-level=2') # No mostrar mensajes de log
 
             service = webdriver.chrome.service.Service(executable_path="./drivers/chromedriver.exe")
-            options.add_experimental_option('excludeSwitches', ['enable-logging'])
             self._driver = webdriver.Chrome(service=service, options=options)
             self._driver.get(link)
-            time.sleep(1)
             self.html = self._driver.page_source
-            #### CONTENIDO DE PRUEBA
-            with open("test.html", "w", encoding="utf-8") as file:
-                file.write(self.html)
-            ####
-            self._driver.quit()
+            threading.Thread(target=self._driver.quit).start()
 
         else:
             self.html = requests.get(link).text
@@ -382,20 +375,23 @@ class Exito(Products):
     def _compute_products(self):
         try:
             product_section: BeautifulSoup = self.find(class_="product-grid_fs-product-grid___qKN2")
+            if product_section == None: raise ValueNotFoundByAttr("No se encontró la sección de productos")
             card_list = product_section.find_all(attrs={"class":"productCard_contentInfo__CBBA7 productCard_column__Lp3OF"})
-            
+            if len(card_list) == 0: raise ValueNotFoundByAttr("No se encontraron tarjetas de productos")
 
             for card in card_list: #Convierte todos los tags en objetos ProductCard
                 self.products.append(ProductCard(card, *self._CARD_DATA2))
                 self.products[-1].link = "https://www.exito.com" + self.products[-1].link
 
+            if len(self.products) == 0:
+                raise ValueNotFoundByAttr("No se encontraron productos")
+            
             return self.products
 
         except Exception as e:
-            print(e, "No se encontraron productos")
+            print(e)
             return None
     
-
 
 
 
