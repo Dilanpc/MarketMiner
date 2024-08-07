@@ -8,11 +8,13 @@ def report(search, ruta, ruta_links, __tries=1):
         page.search_products(search)
         page.make_report(ruta, ruta_links)
     except Exception as e:
-        print(f"Error en la busqueda de {search}: {e}")
+        print(f"Error en reporte de {search}: {e}")
         __tries += 1
         if __tries < 4:
             print(f"Intento {__tries}/3")
             report(search, ruta, ruta_links, __tries)
+        else:
+            print(f"Se ha superado el número de intentos para {search}")
             
 
 
