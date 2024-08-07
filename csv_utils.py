@@ -17,8 +17,7 @@ class Csv():
         if file == None: file = self.file
 
         if not os.path.exists(file):
-            with open(file, 'w') as archivo_csv:
-                pass # Crea el archivo si no existe
+            raise FileNotFoundError(f'El archivo {file} no existe, desde {os.getcwd()}')
 
         with open(file, 'r') as archivo_csv:
             lector = csv.reader(archivo_csv)
