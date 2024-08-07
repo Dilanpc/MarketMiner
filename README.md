@@ -1,6 +1,6 @@
 ## Librerías usadas
 
-- BeautifulSoup
+- beautifulsoup4
 - requests
 - lxml
 - pandas
