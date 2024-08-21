@@ -2,9 +2,9 @@
 
 ## Páginas Web:
 *Sitios Wiki:
-  * [Wikiquote] (https://es.wikiquote.org/wiki/Portada)
-  * [Fandom Movies] (https://www.fandom.com/topics/movies)
-  * [Wikipedia] (https://es.wikipedia.org/wiki/Wikipedia:Portada)
+  * [Wikiquote](https://es.wikiquote.org/wiki/Portada)
+  * [Fandom Movies](https://www.fandom.com/topics/movies)
+  * [Wikipedia](https://es.wikipedia.org/wiki/Wikipedia:Portada)
 *Sitios de Retail:
 
 ## Diagramas de Clases:
