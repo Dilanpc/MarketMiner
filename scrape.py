@@ -188,7 +188,7 @@ class Products(Page):
     def __init__(self, use_selenium=False) -> None:
         self.page_name = ""
         self.link = ""
-        self.products = []
+        self.products: list[ProductCard] = []
         self.names = []
         self.prices = []
         self.links = []

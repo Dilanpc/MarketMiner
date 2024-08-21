@@ -12,75 +12,82 @@ Sitios de Retail:
 
 ```mermaid
 classDiagram
-    direction RL
-    class User {
-        +String nickname
-        +int age
-        +String gender
-        +String nationality
-        +Type_Selection()
+    BeautifulSoup <|-- Page
+    Page <|-- Products
+    Products *-- ProductCard
+    Products <|-- MercadoLibre
+    Products <|-- Exito
+
+    class BeautifulSoup{
+        + find()
+        + find_all()
     }
 
-    class SearchEngine {
-        + search_for(query: string) Result[]
+    class Page{
+        - _driver
+        + html
+
+        + find()
+        + find_all()
     }
 
-    class Result {
-        +String title
-        +String type
+    class Products{
+        + page_name
+        + link
+        + products
+        + names
+        + prices
+        + links
+        + SELENIUM
+
+        - _enter_webpage(link: str)
+        + search_products(link: str)
+        + get_product_by_link(link: str)
+        - _compute_info()
+        - _compude_product(link:str)
+        - _compute_one_product()
+
     }
 
-    class Multimedia {
-        +play()
-        +pause()
-        +stop()
-        +download()
+    class ProductCard{
+        + tag
+        + _attrs_name
+        + _attrs_price
+        + _attrs_link
+        + _exc_attrs_name
+        + _exc_attrs_price
+        + _exc_attrs_link
+        + name
+        + price_txt
+        + price
+        + link
+
+        + define_product()
+        - _compute_name()
+        - _compute_price()
+        - _compute_link()
+        - _search_attrs_in_list(sections: list, attrs: dict, excluded: dict)
+        - __decode_price()
     }
 
-    class Song {
-        +String title
-        +String artist
-        +String language
-        +String duration
-        +String genre
+
+    class MercadoLibre{
+        + CARD_DATA
+        + CARD_DATA2
+
+        + search_products()
+        - compute_one_product()
+        - _compute_products()
     }
 
-    class Genre {
-        +String BPM
-        +String instruments
-        +String harmony
+    class Exito{
+        + CARD_DATA
+        + CARD_DATA2
+
+        + search_products()
+        - compute_one_product()
+        - _compute_products()
     }
-
-    class Podcast  {
-        +String title
-        +String author
-        +String duration
-        +String description
-        +String category
-        +String publicationDate
-    }
-
-    class ShortVideo {
-        +String title
-        +String creator
-        +String duration
-        +String description
-        +String tags
-        +String publicationDate
-    }
- 
- direction TB
-    User --> SearchEngine: selects
-    SearchEngine --> Result
-
-    Result --* Song 
-    Result --* Podcast
-    Result --* ShortVideo
-    Song --* Genre
-
-    Podcast --|> Multimedia
-     Song --|> Multimedia
-      ShortVideo --|> Multimedia
 
 ```
 
