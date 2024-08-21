@@ -1,3 +1,15 @@
+# Sistema de WebScrapping-Proyecto Programación Orientada a Objetos
+
+## Páginas Web:
+### Sitios Wiki:
+### Sitios de Retail:
+
+## Diagramas de Clases:
+
+## Abordaje de Solución:
+
+## Instalación e Uso:
+
 ## Librerías usadas
 
 - beautifulsoup4
