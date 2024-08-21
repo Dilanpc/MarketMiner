@@ -1,11 +1,12 @@
 # Sistema de WebScrapping-Proyecto Programación Orientada a Objetos
 
 ## Páginas Web:
-*Sitios Wiki:
+Sitios Wiki:
   * [Wikiquote](https://es.wikiquote.org/wiki/Portada)
   * [Fandom Movies](https://www.fandom.com/topics/movies)
   * [Wikipedia](https://es.wikipedia.org/wiki/Wikipedia:Portada)
-*Sitios de Retail:
+    
+Sitios de Retail:
 
 ## Diagramas de Clases:
 
