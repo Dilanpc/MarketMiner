@@ -102,7 +102,35 @@ classDiagram
     }
 
 ```
+Diagrama de clase interfaz: 
+```mermaid
+classDiagram
+    Interfaz "1" *--  FrameHome
+   FrameHome *-- FrameMenuShops
+    
 
+    class Interfaz{
+        + title
+        + geometry
+        + frame: FrameHome
+    }
+
+    class FrameHome{
+        + master
+        + frame_menu: FrameMenuShops
+        + frame_info
+
+        + show_info(page_name, color)
+    }
+
+    class FrameMenuShops{
+        
+
+    }
+
+    
+
+```
 
 ## Abordaje de Solución:
 
