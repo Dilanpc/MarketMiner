@@ -104,10 +104,23 @@ classDiagram
 ```
 Diagrama de clase interfaz: Cambiar nombre en código de Interfaz a Interface
 ```mermaid
+
 classDiagram
     Interface "1" *--  FrameHome
    FrameHome *-- FrameMenuShops
-    
+   Tk <|-- Interface
+   Frame <|-- FrameHome
+   Frame <|-- FrameMenuShops
+   Frame <|-- FrameInfoShop
+   Frame <|-- FrameResult
+   
+   
+
+ class Tk{
+    }
+
+ class Frame{
+    }
 
     class Interface{
         + title
@@ -165,9 +178,7 @@ class FrameResult{
 + _go_to_link(link)
     }
 
-
-
-   
+ 
 
     
 
