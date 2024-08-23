@@ -102,14 +102,14 @@ classDiagram
     }
 
 ```
-Diagrama de clase interfaz: 
+Diagrama de clase interfaz: Cambiar nombre en código de Interfaz a Interface
 ```mermaid
 classDiagram
-    Interfaz "1" *--  FrameHome
+    Interface "1" *--  FrameHome
    FrameHome *-- FrameMenuShops
     
 
-    class Interfaz{
+    class Interface{
         + title
         + geometry
         + frame: FrameHome
@@ -124,9 +124,50 @@ classDiagram
     }
 
     class FrameMenuShops{
-        
+        + master: FrameHome
++ labels
++ buttons: list
++ info
+
++ _show_buttons()
 
     }
+
+class FrameInfoShop{
+        + master
+        + result
+        + __BG
+        + page
+        + search_input
+        + load_label
+        + button_search
+
+        + __search_web(class_name)
++ search()
++ __ search_thread()
++ __loading()
+    }
+
+class FrameResult{
+        + master
++ data
++ label
++ canvas
++ scrollbar
++ inner_frame
++ buttons
++ canvas_frame
+      
++ __on_frame_configure(event)
++ __on_canvas_configure(event)
++ _calculate_buttons()
++ _show_buttons()
++ _go_to_link(link)
+    }
+
+
+
+   
 
     
 
