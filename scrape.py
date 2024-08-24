@@ -130,7 +130,7 @@ class ProductCard():
                 raise ValueNotFoundByAttr("Se encontraron varios links en", self.name)
             
             self.link = section[0].get('href')
-            return self.name
+            return self.link
         except ValueNotFoundByAttr:
             raise ValueNotFoundByAttr("No se encontró el link en", self.name)
         except Exception as e:
@@ -193,7 +193,6 @@ class Products(Page):
         self.prices = []
         self.links = []
         self.SELENIUM = use_selenium
-        self._CARD_DATA = []  # Se incluyen las clases para istanciar los objetos ProductCard
     
     def _enter_webpage(self, link):
         self.link = link
@@ -214,8 +213,19 @@ class Products(Page):
             self.names.append(product.name)
             self.links.append(product.link)
 
-    def _compute_products(self, *args): # Cada página tiene una estructura diferente, por lo que se debe sobreescribir
-        pass
+    def _compute_products(self, product_section_class: str, product_card_class: str, card_data: list):
+        product_section: BeautifulSoup = self.find(class_=product_section_class)
+        if product_section == None: raise ValueNotFoundByAttr("No se encontró la sección de productos")
+        card_list = product_section.find_all(class_=product_card_class)
+        if len(card_list) == 0: raise ValueNotFoundByAttr("No se encontraron tarjetas de productos")
+
+        for card in card_list:  #Convierte todos los tags en objetos ProductCard
+            self.products.append(ProductCard(card, *card_data))
+        
+        return self.products
+
+
+    
     def _compute_one_product(self, *args): # Cada página tiene una estructura diferente, por lo que se debe sobreescribir
         pass
     
@@ -325,25 +335,14 @@ class MercadoLibre(Products):
         product.link = link
         return product
 
-    def _compute_products(self):
+    def _compute_products(self, product_section_class: str = "ui-search-layout", product_card_class: str = "ui-search-layout__item", card_data: list = None):
         try:
-            product_section: BeautifulSoup = self.find(class_="ui-search-layout")
-            card_list = product_section.find_all(class_="ui-search-layout__item")
-
-            for card in card_list: #Convierte todos los tags en objetos ProductCard
-                self.products.append(ProductCard(card, *self.__CARD_DATA))
-
-            return self.products
+            return super()._compute_products(product_section_class, product_card_class, self.__CARD_DATA)
 
         except ValueNotFoundByAttr:
             print("Usando segunda estructura")
-            product_section: BeautifulSoup = self.find(class_="ui-search-layout")
-            card_list = product_section.find_all(class_="ui-search-layout__item")
 
-            for card in card_list:
-                self.products.append(ProductCard(card, *self.__CARD_DATA2))
-            
-            return self.products
+            return super()._compute_products(product_section_class, product_card_class, self.__CARD_DATA2)
 
 
 
@@ -372,24 +371,25 @@ class Exito(Products):
     def search_products(self, product: str):
         super().search_products(f"https://www.exito.com/s?q={product}")
 
-    def _compute_products(self):
+    def _compute_products(self, product_section_class: str = "product-grid_fs-product-grid___qKN2", product_card_class: str = "productCard_contentInfo__CBBA7", card_data: list = None):
         try:
-            product_section: BeautifulSoup = self.find(class_="product-grid_fs-product-grid___qKN2")
-            if product_section == None: raise ValueNotFoundByAttr("No se encontró la sección de productos")
-            card_list = product_section.find_all(attrs={"class":"productCard_contentInfo__CBBA7 productCard_column__Lp3OF"})
-            if len(card_list) == 0: raise ValueNotFoundByAttr("No se encontraron tarjetas de productos")
+            super()._compute_products(product_section_class, product_card_class, self._CARD_DATA2)
+            for product in self.products:
+                product.link = "https://www.exito.com" + product.link
 
-            for card in card_list: #Convierte todos los tags en objetos ProductCard
-                self.products.append(ProductCard(card, *self._CARD_DATA2))
-                self.products[-1].link = "https://www.exito.com" + self.products[-1].link
-
-            if len(self.products) == 0:
-                raise ValueNotFoundByAttr("No se encontraron productos")
-            
             return self.products
+
 
         except Exception as e:
             print(e)
             return None
     
 
+if __name__ == "__main__":
+
+    page = Exito()
+    page.search_products("celular")
+
+    page.print_products()
+
+    print(page.links[0])
