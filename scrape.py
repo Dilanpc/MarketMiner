@@ -384,3 +384,31 @@ class Exito(Products):
             print(e)
             return None
     
+
+
+class Linio(Products):
+    def __init__(self):
+        super().__init__(use_selenium=True)
+
+        self.page_name = "Linio"
+        self.__CARD_DATA = [
+            [{"class":"pod-subTitle"}], # Atributos para nombre
+            [{"class":"prices-0"}], # Atributos para precio
+            [{"class":"pod-link"}], # Atributos para link  CONFIRMAR SI SÍ SE PUEDE USAR ESA CLASE
+            {}, # Atributos excluidos para nombre
+            {}, # Atributos excluidos para precio
+            {}  # Atributos excluidos para link
+        ]
+
+    def search_products(self, product: str):
+        super().search_products(f"https://linio.falabella.com.co/linio-co/search?Ntt={product}")
+
+    def _compute_products(self, product_section_attrs: dict = {"id": "testId-searchResults-products"}, product_card_attrs: dict = {"class": "grid-pod"}, card_data: list = None):
+        try:                                                                                                                                 
+            return super()._compute_products(product_section_attrs, product_card_attrs, self.__CARD_DATA)
+
+
+        except Exception as e:
+            print(e)
+            return None
+        
