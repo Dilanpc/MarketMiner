@@ -31,7 +31,7 @@ class Page(BeautifulSoup):
         super().__init__(self.html, 'lxml')
 
     def find(self, *args, **kwargs):
-        if 'attrs' in kwargs and 'etiqueta' in kwargs['attrs']:
+        if 'attrs' in kwargs and 'etiqueta' in kwargs['attrs']: # Si se especifica una etiqueta, se busca por ella
             etiqueta = kwargs['attrs']['etiqueta']
             del kwargs['attrs']['etiqueta']
             return super().find(etiqueta, *args, **kwargs)
@@ -213,10 +213,10 @@ class Products(Page):
             self.names.append(product.name)
             self.links.append(product.link)
 
-    def _compute_products(self, product_section_class: str, product_card_class: str, card_data: list):
-        product_section: BeautifulSoup = self.find(class_=product_section_class)
+    def _compute_products(self, product_section_attrs: dict = None, product_card_attrs: dict = None, card_data: list = None): 
+        product_section: BeautifulSoup = self.find(attrs = product_section_attrs)
         if product_section == None: raise ValueNotFoundByAttr("No se encontró la sección de productos")
-        card_list = product_section.find_all(class_=product_card_class)
+        card_list = product_section.find_all(attrs = product_card_attrs)
         if len(card_list) == 0: raise ValueNotFoundByAttr("No se encontraron tarjetas de productos")
 
         for card in card_list:  #Convierte todos los tags en objetos ProductCard
@@ -335,14 +335,14 @@ class MercadoLibre(Products):
         product.link = link
         return product
 
-    def _compute_products(self, product_section_class: str = "ui-search-layout", product_card_class: str = "ui-search-layout__item", card_data: list = None):
+    def _compute_products(self, product_section_attrs: dict = {"class": "ui-search-layout"}, product_card_attrs: dict = {"class": "ui-search-layout__item"}, card_data: list = None):
         try:
-            return super()._compute_products(product_section_class, product_card_class, self.__CARD_DATA)
+            return super()._compute_products(product_section_attrs, product_card_attrs, self.__CARD_DATA)
 
         except ValueNotFoundByAttr:
             print("Usando segunda estructura")
 
-            return super()._compute_products(product_section_class, product_card_class, self.__CARD_DATA2)
+            return super()._compute_products(product_section_attrs, product_card_attrs, self.__CARD_DATA2)
 
 
 
@@ -351,7 +351,7 @@ class Exito(Products):
     def __init__(self):
         super().__init__(use_selenium=True)
         self.page_name = "Exito"
-        self._CARD_DATA = [
+        self.__CARD_DATA = [
             [{"data-fs-product-card-title":"true"}], # Atributos para nombre
             [{"class":"ProductPrice_container__price__XmMWA"}], # Atributos para precio
             [{"data-fs-product-card-title":"true"}, {"data-testid":"product-link"}], # Atributos para link
@@ -359,7 +359,7 @@ class Exito(Products):
             {}, # Atributos excluidos para precio
             {}  # Atributos excluidos para link
         ]
-        self._CARD_DATA2 = [
+        self.__CARD_DATA2 = [
             [{"class":"styles_name__qQJiK"}], # Atributos para nombre
             [{"class":"ProductPrice_container__price__XmMWA"}], # Atributos para precio
             [{"class":"productCard_productLinkInfo__It3J2"}], # Atributos para link
@@ -371,9 +371,9 @@ class Exito(Products):
     def search_products(self, product: str):
         super().search_products(f"https://www.exito.com/s?q={product}")
 
-    def _compute_products(self, product_section_class: str = "product-grid_fs-product-grid___qKN2", product_card_class: str = "productCard_contentInfo__CBBA7", card_data: list = None):
+    def _compute_products(self, product_section_attrs: dict = {"class": "product-grid_fs-product-grid___qKN2"}, product_card_attrs: dict = {"class": "productCard_contentInfo__CBBA7"}, card_data: list = None):
         try:
-            super()._compute_products(product_section_class, product_card_class, self._CARD_DATA2)
+            super()._compute_products(product_section_attrs, product_card_attrs, self.__CARD_DATA2)
             for product in self.products:
                 product.link = "https://www.exito.com" + product.link
 
@@ -384,12 +384,3 @@ class Exito(Products):
             print(e)
             return None
     
-
-if __name__ == "__main__":
-
-    page = Exito()
-    page.search_products("celular")
-
-    page.print_products()
-
-    print(page.links[0])
