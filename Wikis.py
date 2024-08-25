@@ -32,15 +32,13 @@ class Wikipedia(WikiPage):
                     break 
                 
                 
-    
-wikipedia_page = Wikipedia('https://es.wikipedia.org/wiki/Lionel_Messi')
+if __name__ == "__main__":
+    wikipedia_page = Wikipedia('https://es.wikipedia.org/wiki/Lionel_Messi')
 
+    print(wikipedia_page.get_title())
 
+    # Definir la lista de palabras clave a buscar
+    keywords = ["Balón de Oro", "Balones de Oro"]
 
-print(wikipedia_page.get_title())
-
-# Definir la lista de palabras clave a buscar
-keywords = ["Balón de Oro", "Balones de Oro"]
-
-# Llamar al método para encontrar párrafos que contengan las palabras clave
-wikipedia_page.find_keyword(keywords)
+    # Llamar al método para encontrar párrafos que contengan las palabras clave
+    wikipedia_page.find_keyword(keywords)
