@@ -23,17 +23,17 @@ if __name__ == "__main__":
 
     threads = []
 
-    threads.append(threading.Thread(target=lambda: report("computador", "reports/computadorReport.csv", "reports/computadorLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("iphone 15", "reports/iphoneReport.csv", "reports/iphoneLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("impresora 3d", "reports/impresoraReport.csv", "reports/impresoraLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("Tarjeta gráfica", "reports/tarjetaGraficaReport.csv", "reports/tarjetaGraficaLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("celular", "reports/celularReport.csv", "reports/celularLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("tv", "reports/tvReport.csv", "reports/tvLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("reloj", "reports/relojReport.csv", "reports/relojLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("audífonos", "reports/audifonosReport.csv", "reports/audifonosLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("camisa", "reports/camisaReport.csv", "reports/camisaLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("zapatos", "reports/zapatosReport.csv", "reports/zapatosLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("pantalón", "reports/pantalonReport.csv", "reports/pantalonLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("computador", "reports/mercadoLibre/computadorReport.csv", "reports/mercadoLibre/computadorLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("iphone 15", "reports/mercadoLibre/iphoneReport.csv", "reports/mercadoLibre/iphoneLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("impresora 3d", "reports/mercadoLibre/impresoraReport.csv", "reports/mercadoLibre/impresoraLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("Tarjeta gráfica", "reports/mercadoLibre/tarjetaGraficaReport.csv", "reports/mercadoLibre/tarjetaGraficaLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("celular", "reports/mercadoLibre/celularReport.csv", "reports/mercadoLibre/celularLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("tv", "reports/mercadoLibre/tvReport.csv", "reports/mercadoLibre/tvLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("reloj", "reports/mercadoLibre/relojReport.csv", "reports/mercadoLibre/relojLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("audífonos", "reports/mercadoLibre/audifonosReport.csv", "reports/mercadoLibre/audifonosLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("camisa", "reports/mercadoLibre/camisaReport.csv", "reports/mercadoLibre/camisaLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("zapatos", "reports/mercadoLibre/zapatosReport.csv", "reports/mercadoLibre/zapatosLinks.csv")))
+    threads.append(threading.Thread(target=lambda: report("pantalón", "reports/mercadoLibre/pantalonReport.csv", "reports/mercadoLibre/pantalonLinks.csv")))
     
     porcentaje = 0
 
