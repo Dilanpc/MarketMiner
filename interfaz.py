@@ -55,7 +55,7 @@ class FrameMenuShops(tk.Frame):
 
         self.buttons.append(tk.Button(self, text="Mercado libre", command=lambda : master.show_info("MercadoLibre", "yellow")))
         self.buttons.append(tk.Button(self, text="Exito", command=lambda : master.show_info("Exito", "yellow")))
-        self.buttons.append(tk.Button(self, text="Linio", command=lambda : master.show_info("Linio", "red")))
+        self.buttons.append(tk.Button(self, text="Linio", command=lambda : master.show_info("Linio", "#e4334a")))
 
         self._show_buttons()
 
