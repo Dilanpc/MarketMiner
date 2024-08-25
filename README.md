@@ -108,6 +108,8 @@ Diagrama de clase interfaz: Cambiar nombre en código de Interfaz a Interface
 classDiagram
     Interface "1" *--  FrameHome
    FrameHome *-- FrameMenuShops
+   FrameHome *-- FrameInfoShop
+   FrameInfoShop *-- FrameResult
    Tk <|-- Interface
    Frame <|-- FrameHome
    Frame <|-- FrameMenuShops
