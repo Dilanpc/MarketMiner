@@ -20,8 +20,6 @@
 
 ### Sitios de Retail:
 
-
-
 * [Mercado Libre](https://www.mercadolibre.com.co)
 * [Linio](https://linio.falabella.com.co/linio-co)
 * [Éxito](https://www.exito.com/?srsltid=AfmBOor0YAfmwqltX-hxWduWqMq0UKwCbFNT9Od6TJyyvHtGHMWu7Rpw)
@@ -36,6 +34,8 @@
 
 ## Diagramas de Clases:
 
+### Diagrama de Clases Scrapping a Páginas de Retail:
+
 A continuación se presenta el diagrama de clases del programa principal encargado de realizar el scrapeo a las páginas de Retail. Se puede observar que se parte del trabajo con librerías como Selenium y BeautifulSoup que facilitan la automatización del navegador y la extracción de datos estructurados de las páginas web.
 
 ```mermaid
@@ -45,6 +45,8 @@ classDiagram
     Products *-- ProductCard
     Products <|-- MercadoLibre
     Products <|-- Exito
+    Products <|-- Linio
+
 
     class BeautifulSoup{
         + find()
@@ -103,7 +105,7 @@ classDiagram
         + CARD_DATA
         + CARD_DATA2
 
-        + search_products()
+        + search_products(product)
         - compute_one_product()
         - _compute_products()
     }
@@ -112,27 +114,36 @@ classDiagram
         + CARD_DATA
         + CARD_DATA2
 
-        + search_products()
+        + search_products(product)
         - compute_one_product()
         - _compute_products()
     }
 
+    class Linio {
+        + __CARD_DATA
+        + page_name: str
+        + search_products(product)
+        + _compute_products()
+    }
+
 ```
 
-El diagrama incluye las siguientes clases: 
+Las clases presentes en el diagrama se explican a continuación:  
 
-* BeautifulSoup: Esta clase encapsula las funcionalidades de la librería BeautifulSoup, proporcionando métodos como find() y find_all(), que permiten buscar elementos en el HTML de las páginas web.
+* BeautifulSoup: Será la clase encargada de encapsular las funcionalidades de la librería BeautifulSoup, permitiendo el uso de métodos como find() y find_all(), que facilitan la búsqueda de elementos en el HTML de las páginas web.
 
-* Page: Representa una página web, conteniendo un controlador de navegador _driver y el contenido HTML de la página. Esta clase también define métodos para buscar elementos en la página utilizando las capacidades de BeautifulSoup.
+* Page: Será la clase que representa a una página web. Contiene un controlador de navegador _driver y el contenido HTML de la página. Esta clase también proporciona métodos para buscar elementos en la página utilizando las capacidades de la librería BeautifulSoup.
 
-* Products: Esta clase es responsable de gestionar la búsqueda y extracción de productos de las páginas de retail. Incluye atributos como page_name, link, products, names, prices, y links. Sus métodos permiten ingresar a una página web, buscar productos, y obtener información específica de productos mediante enlaces.
+* Products: Será la clase responsable de gestionar la búsqueda y extracción de productos de las páginas de retail. Esta clase incluye atributos como page_name, link, products, names, prices, y links. Los métodos proporcionan el ingreso a una página web, permitiendo buscar productos, y obtener información específica de productos mediante enlaces.
 
-* ProductCard: Representa una tarjeta de producto individual, que contiene atributos como name, price, y link. Incluye métodos para definir el producto y calcular sus atributos, además de un método para buscar atributos en listas específicas.
+* ProductCard: Será la clase que represente una tarjeta de producto individual, que contiene atributos como name, price, y link. Sus métodos permiten definir los productos y estimar sus atributos.
 
-* MercadoLibre y Exito: Estas clases heredan de Products y están diseñadas para manejar la búsqueda de productos en sus respectivas plataformas. Ambas clases tienen atributos para almacenar datos de tarjetas de productos (CARD_DATA, CARD_DATA2) y métodos para realizar búsquedas y calcular información sobre los productos.
+ ###### NOTA: Se decidió utilizar el término tarjeta para describir a la sección de la página web que encapsula a cada uno de los productos y los enseña en la página principal tras la búsqueda. Muestra la imagen del producto, su nombre, precio, descuento, valoración, entre otras características. Para este caso solo se utilizan los datos de precio, nombre y link. 
+
+* Mercado Libre, Exito y Linio: Serán las clases destinadas a manejar la búsqueda de productos en sus respectivas plataformas. Todas las clases tienen atributos para almacenar datos de tarjetas de productos (CARD_DATA, CARD_DATA2) y métodos para realizar búsquedas y calcular información sobre los productos.
 
 
-Diagrama de clase interfaz: Cambiar nombre en código de Interfaz a Interface
+### Diagrama de Clases Scrapping a Páginas Wiki:
 
 ```mermaid
 
@@ -173,7 +184,21 @@ classDiagram
     
 
 ```
-Diagrama de clase interfaz: Cambiar nombre en código de Interfaz a Interface
+
+A continuación se presenta el diagrama de clases del programa encargado de extraer el texto de páginas de Wiki, como Wikipedia y Wikiquote.
+
+El diagrama incluye las siguientes clases:
+
+* WikiPage: Esta clase representará a una página Wiki genérica. Por esto contará con atributos como url, page, y soup. Este último utiliza la librería BeautifulSoup y facilita el análisis del contenido HTML. Los métodos get_title() y get_paragraph(), permitirán extraer el título y los párrafos de la página, proporcionando una base común para las clases hijas. 
+
+* Wikipedia: Esta será una subclase de WikiPage y añadirá funcionalidades específicas para la búsqueda de palabras clave en Wikipedia. Para esto se utilizará el método find_keywords(keywords: list), que recibirá unas palabras clave de interés y serán buscadas en la página.
+
+* WikiQuoteScience: También será una subclase de Wikipage y se enfocará en la búsqueda de citas científicas en la página WikiQuote. Los métodos find_quotes() y y find_author() permitirán extraer citas junto a los autores de las mismas.
+
+* WikiMovie: Esta clase será una clase hija de Wikipedia, y estará dedicada a la información sobre películas encontrada en dicha página. La idea es que permita, mediante los métodos definidos, encontrar los actores, directores, tramas y premios de las películas de interés que se busquen en la página principal de Wikipedia.
+   
+### Diagrama de Clases Posible Interfaz:
+
 ```mermaid
 
 classDiagram
@@ -252,73 +277,9 @@ class FrameResult{
     }
 
  
-
-    
-
-```
-Diagrama de clase interfaz: Cambiar nombre en código de Interfaz a Interface
-
-```mermaid
-
-classDiagram
-   WikiPage <|-- Wikipedia
-   WikiPage <|-- WikiQuoteScience
-   Wikipedia<|-- WikiMovie
-    
    
 
-   class WikiPage{
-        + url: str
-        + page
-        + soup: BeautifulSoup
-+ get_tittle()
-+ get_paragraph()
-    }
-
-    class Wikipedia{
-        + find_keywords(keywords: list)
-    }
-
-    class WikiQuoteScience{
-        + find_quotes(keywords: list)
-+find_author(keywords: list)
-
-    }
-
-   class WikiMovie{
-
-
-        + find_actors()
-+find_director()
-+find_movie_plot()
-+find_awards()
-
-    }
-    
-
 ```
-
-## Descripción 
-
-Descripción del Proyecto de Programación Orientada a Objetos (POO)
-El proyecto implementa una solución de scraping web para extraer información sobre productos desde varias tiendas en línea. El código está diseñado para buscar productos específicos, obtener sus precios, nombres y enlaces, y luego generar informes en formato CSV con los datos recolectados. Este enfoque permite la comparación de precios y el seguimiento de productos en diferentes sitios de comercio electrónico. A continuación, se presenta una descripción detallada de las funcionalidades principales del proyecto:
-
-Estructura del Proyecto
-Clase Page: Esta clase extiende la funcionalidad de BeautifulSoup, un parser de HTML muy utilizado. Permite obtener el contenido HTML de una página web, ya sea mediante peticiones HTTP estándar o usando Selenium para cargar dinámicamente el contenido. Esto es útil cuando los datos en la página web están cargados con JavaScript y no son accesibles directamente a través de una solicitud HTTP.
-
-Clase ProductCard: Representa un producto individual extraído de la página web. Esta clase facilita el acceso a atributos específicos de un producto, como su nombre, precio y enlace. Implementa métodos para buscar y extraer estos datos utilizando estructuras de HTML, con la posibilidad de manejar exclusiones para evitar errores.
-
-Clase Products: Extiende la funcionalidad de la clase Page para gestionar la extracción de múltiples productos en una página. Implementa métodos para buscar productos en una URL específica y generar informes en formato CSV. Esta clase también ofrece la funcionalidad de calcular el precio promedio de los productos y convertir los datos en un DataFrame para su análisis.
-
-Clases MercadoLibre, Exito, Linio: Estas son subclases de Products específicas para cada una de las tiendas en línea mencionadas. Cada una de estas clases está adaptada para manejar la estructura HTML particular de la tienda correspondiente, utilizando diferentes métodos y atributos para asegurar la extracción correcta de los datos de los productos.
-
-Manejo de Excepciones: El proyecto incluye una excepción personalizada ValueNotFoundByAttr, que se lanza cuando no se puede encontrar un valor especificado por ciertos atributos en el HTML. Esto asegura que el código pueda manejar errores comunes en la extracción de datos sin interrumpir la ejecución del programa.
-
-Flujo de Trabajo
-El usuario puede especificar una tienda y un producto, y la clase correspondiente se encarga de navegar por el sitio, buscar el producto y extraer los datos relevantes.
-Los datos se almacenan en listas y matrices, que luego se exportan a archivos CSV. Esto facilita el análisis de los precios de los productos a lo largo del tiempo.
-La clase Products permite al usuario comparar los precios y realizar análisis de tendencias, mientras que las subclases específicas de tienda manejan las particularidades de cada sitio de comercio electrónico.
-
 
 ## Abordaje de Solución:
 
