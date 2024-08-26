@@ -394,7 +394,7 @@ class Linio(Products):
         self.__CARD_DATA = [
             [{"class":"pod-subTitle"}], # Atributos para nombre
             [{"class":"prices-0"}], # Atributos para precio
-            [{"class":"pod-link"}], # Atributos para link  CONFIRMAR SI SÍ SE PUEDE USAR ESA CLASE
+            [{"class":"pod-link"}], # Atributos para link
             {}, # Atributos excluidos para nombre
             {}, # Atributos excluidos para precio
             {}  # Atributos excluidos para link

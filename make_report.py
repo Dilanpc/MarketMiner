@@ -1,10 +1,10 @@
 import threading
-from scrape import MercadoLibre
+from scrape import MercadoLibre, Exito, Linio
 
 
-def report(search, ruta, ruta_links, __tries=1):
+def report(clase, search, ruta, ruta_links, __tries=1):
     try:
-        page = MercadoLibre()
+        page = clase()
         page.search_products(search)
         page.make_report(ruta, ruta_links)
     except Exception as e:
@@ -12,37 +12,71 @@ def report(search, ruta, ruta_links, __tries=1):
         __tries += 1
         if __tries < 4:
             print(f"Intento {__tries}/3")
-            report(search, ruta, ruta_links, __tries)
+            report(clase, search, ruta, ruta_links, __tries)
         else:
             print(f"Se ha superado el número de intentos para {search}")
             
 
+busquedas: list[str] = ["computador", "iphone 15", "impresora 3d", "Tarjeta gráfica", "celular", "tv", "reloj", "audífonos", "camisa", "zapatos", "pantalón"]
 
 
 if __name__ == "__main__":
+    exeMercadoLibre = input("¿Ejecutar MercadoLibre? s/n: ").lower() == "s"
+    exeExito = input("¿Ejecutar Exito? s/n: ").lower() == "s"
+    exeLinio = input("¿Ejecutar Linio? s/n: ").lower() == "s"
 
-    threads = []
+    if exeMercadoLibre:
+        print("Iniciando reportes de MercadoLibre")
+        threads = []
 
-    threads.append(threading.Thread(target=lambda: report("computador", "reports/mercadoLibre/computadorReport.csv", "reports/mercadoLibre/computadorLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("iphone 15", "reports/mercadoLibre/iphoneReport.csv", "reports/mercadoLibre/iphoneLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("impresora 3d", "reports/mercadoLibre/impresoraReport.csv", "reports/mercadoLibre/impresoraLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("Tarjeta gráfica", "reports/mercadoLibre/tarjetaGraficaReport.csv", "reports/mercadoLibre/tarjetaGraficaLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("celular", "reports/mercadoLibre/celularReport.csv", "reports/mercadoLibre/celularLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("tv", "reports/mercadoLibre/tvReport.csv", "reports/mercadoLibre/tvLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("reloj", "reports/mercadoLibre/relojReport.csv", "reports/mercadoLibre/relojLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("audífonos", "reports/mercadoLibre/audifonosReport.csv", "reports/mercadoLibre/audifonosLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("camisa", "reports/mercadoLibre/camisaReport.csv", "reports/mercadoLibre/camisaLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("zapatos", "reports/mercadoLibre/zapatosReport.csv", "reports/mercadoLibre/zapatosLinks.csv")))
-    threads.append(threading.Thread(target=lambda: report("pantalón", "reports/mercadoLibre/pantalonReport.csv", "reports/mercadoLibre/pantalonLinks.csv")))
-    
-    porcentaje = 0
+        for busqueda in busquedas: # Crear un hilo por cada busqueda
+            threads.append(threading.Thread(target=lambda keyword=busqueda: report(MercadoLibre, keyword, f"reports/mercadoLibre/{keyword}Report.csv", f"reports/mercadoLibre/{keyword}Links.csv")))
 
-    for t in threads:
-        t.start()
+        porcentaje = 0
 
-    for t in threads:
-        t.join()
-        porcentaje += 100 / len(threads)
-        print(f"{round(porcentaje)}% completado", end="\r")
-    
-    print("\nFinalizado")
+        for t in threads: # Iniciar los hilos
+            t.start()
+
+        for t in threads: # Esperar a que los hilos terminen
+            t.join()
+            porcentaje += 100 / len(threads)
+            print(f"{round(porcentaje)}% completado", end="\r")
+        
+        print("\nMercadoLibre finalizado")
+
+    if exeExito:
+        print("Iniciando reportes de Exito")
+        threads = []
+
+        for busqueda in busquedas:
+            threads.append(threading.Thread(target=lambda keyword=busqueda: report(Exito, keyword, f"reports/exito/{keyword}Report.csv", f"reports/exito/{keyword}Links.csv")))
+
+
+        porcentaje = 0
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+            porcentaje += 100 / len(threads)
+            print(f"{round(porcentaje)}% completado", end="\r")
+        
+        print("\nExito finalizado")
+
+
+    if exeLinio:
+        print("Iniciando reportes de Linio")
+        threads = []
+
+        for busqueda in busquedas:
+            threads.append(threading.Thread(target=lambda keyword=busqueda: report(Linio, keyword, f"reports/linio/{keyword}Report.csv", f"reports/linio/{keyword}Links.csv")))
+
+
+        porcentaje = 0
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+            porcentaje += 100 / len(threads)
+            print(f"{round(porcentaje)}% completado", end="\r")
+        
+        print("\nLinio finalizado")
