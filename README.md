@@ -185,6 +185,38 @@ class FrameResult{
     
 
 ```
+Diagrama de clase interfaz: Cambiar nombre en código de Interfaz a Interface
+
+```mermaid
+
+classDiagram
+   WikiPage <|-- Wikipedia
+   WikiPage <|-- WikiQuoteScience
+    
+   
+
+   class WikiPage{
+        + url: str
+        + page
+        + soup: BeautifulSoup
++ get_tittle()
++ get_paragraph()
+    }
+
+    class Wikipedia{
+        + find_keywords(keywords: list)
+    }
+
+    class WikiQuoteScience{
+        + find_quotes(keywords: list)
++find_author(keywords: list)
+
+    }
+
+   class WikiMovie
+    
+
+```
 
 ## Abordaje de Solución:
 
