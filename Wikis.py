@@ -76,6 +76,7 @@ if __name__ == "__main__":
     
     # WIKIQUOTE
     
+    
     wiki_quote_page = WikiQuoteScience('https://es.wikiquote.org/wiki/Ciencia')
     keywords = ["ciencia", "científico"]
     print(wiki_quote_page.get_title())    
