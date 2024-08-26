@@ -1,7 +1,7 @@
 # Sistema de WebScrapping-Proyecto Programación Orientada a Objetos
 
 ## Alternativa Seleccionada:
-* Sistema de WebScrapping para páginas de retail y páginas tipo wiki
+ * **_Sistema de WebScrapping para páginas de retail y páginas tipo wiki_**
 
 ## Definición del Problema
 
@@ -145,6 +145,8 @@ Las clases presentes en el diagrama se explican a continuación:
 
 ### Diagrama de Clases Scrapping a Páginas Wiki:
 
+A continuación se presenta el diagrama de clases del programa encargado de extraer el texto de páginas de Wiki, como Wikipedia y Wikiquote.
+
 ```mermaid
 
 classDiagram
@@ -185,7 +187,6 @@ classDiagram
 
 ```
 
-A continuación se presenta el diagrama de clases del programa encargado de extraer el texto de páginas de Wiki, como Wikipedia y Wikiquote.
 
 El diagrama incluye las siguientes clases:
 
