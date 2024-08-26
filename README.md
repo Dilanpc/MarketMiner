@@ -192,6 +192,7 @@ Diagrama de clase interfaz: Cambiar nombre en código de Interfaz a Interface
 classDiagram
    WikiPage <|-- Wikipedia
    WikiPage <|-- WikiQuoteScience
+   WikiPage <|-- WikiMovie
     
    
 
@@ -213,7 +214,15 @@ classDiagram
 
     }
 
-   class WikiMovie
+   class WikiMovie{
+
+
+        + find_actors()
++find_director()
++find_movie_plot()
++find_awards()
+
+    }
     
 
 ```
