@@ -4,24 +4,31 @@ import time
 import webbrowser
 import scrape
 
-windowWidth = 800
-windowHeight = 600
+# Ventana principal, contiene un FrameHome y un FrameShops
+class Interface(tk.Tk):
+    windowWidth = 800
+    windowHeight = 600
 
-class Interfaz(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Comparador de tiendas")
-        self.geometry(f"{windowWidth}x{windowHeight}")
-        self.frameTitle = FrameTitle()
+        self.geometry(f"{Interface.windowWidth}x{Interface.windowHeight}")
+
+        # Crear instancia de FrameHome
+        self.frameTitle = FrameTitle(master=self)
         self.frameTitle.pack()
-        self.frameShops = FrameShops()
+
+        # Crear instancia de FrameShops
+        self.frameShops = FrameShops(master=self)
         self.frameShops.pack(expand=True, fill=tk.BOTH)
 
 
+# Frame ubicado en la parte superior de la ventana, contiene el cuadro de busqueda
 class FrameTitle(tk.Frame):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, master=None, **kwargs):
+        super().__init__(master, **kwargs)
 
+        # Crear un cuadro de texto y un botón para buscar
         self.entry = tk.Entry(self)
         self.entry.pack()
 
@@ -29,50 +36,45 @@ class FrameTitle(tk.Frame):
         self.button.pack()
 
 
-
-
-
     def __buscar(self, text):
-        print("buscar")
+        print("buscar", text)
 
 
 
-
+# Frame que agrupa los resultados de las tiendas
 class FrameShops(tk.Frame):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, master=None, **kwargs):
+        super().__init__(master, **kwargs)
 
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
 
         # Crear instancias de FrameResults
-        self.shop1 = FrameResults(self, bg="yellow")
-        self.shop2 = FrameResults(self, bg="red")
-        self.shop3 = FrameResults(self, bg="green")
+        self.shop1 = FrameResults(master=self, bg="yellow")
+        self.shop2 = FrameResults(master=self, bg="red")
+        self.shop3 = FrameResults(master=self, bg="green")
 
         # Colocar los FrameResults usando grid
         self.shop1.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
         self.shop2.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
         self.shop3.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
 
-        # Asegurarse de que las columnas y filas se expandan
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
+        self.columnconfigure(2, weight=1)
+        self.rowconfigure(0, weight=1)
 
 
 
-
+# Frame que contiene los resultados de solo una tienda
 class FrameResults(tk.Frame):
-    def __init__(self, bg):
-        super().__init__()
+    def __init__(self, master=None, **kwargs):
+        super().__init__(master, **kwargs)
 
-        self.config(bg=bg, width=windowWidth/3, height=windowHeight-100)
+        self.config(width=Interface.windowWidth/3, height=Interface.windowHeight-100)
 
-        self.label = tk.Label(self, text="Tienda 1", bg=bg)
+        self.label = tk.Label(self, text="Tienda 1", bg=self['bg'])
         self.label.pack()
 
 
+if __name__ == "__main__":
+    interface = Interface()
+    interface.mainloop()
