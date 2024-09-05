@@ -38,7 +38,7 @@ class WikiQuoteScience(WikiPage):
         self.page = requests.get(url)
         self.soup = BeautifulSoup(self.page.text, 'html.parser')
         
-    def find_quotes(self, quote):
+    def find_quotes(self, keywords: list[str]):
         quotes = []
         for quote in self.soup.select('li'):
             for keyword in keywords:
@@ -49,7 +49,7 @@ class WikiQuoteScience(WikiPage):
         
         return quotes
             
-    def find_author(self, author):
+    def find_authors(self):
         authors = []
         for author in self.soup.select('li'):
             author_tag = author.find('a', title=True)
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     keywords = ["ciencia", "científico"]
     print(wiki_quote_page.get_title())    
     quotes = wiki_quote_page.find_quotes(keywords)
-    authors = wiki_quote_page.find_author(keywords)
+    authors = wiki_quote_page.find_authors()
     
     for quote, author in zip(quotes, authors):
         print(f"{quote} - {author}")
