@@ -1,6 +1,7 @@
+import sys
+import os
 import threading
-from scrape import MercadoLibre, Exito, Linio
-
+from MarketMiner.scrape import MercadoLibre, Exito, Linio
 
 def report(clase, search, ruta, ruta_links, __tries=1):
     try:
@@ -16,8 +17,10 @@ def report(clase, search, ruta, ruta_links, __tries=1):
         else:
             print(f"Se ha superado el número de intentos para {search}")
             
+ruta = "../reports"
+print(os.getcwd()+ ruta)
 
-busquedas: list[str] = ["computador", "iphone 15", "impresora 3d", "Tarjeta gráfica", "celular", "tv", "reloj", "audífonos", "camisa", "zapatos", "pantalón"]
+busquedas: list[str] = ["computador", "iphone 15", "impresora 3d", "tarjeta gráfica", "celular", "tv", "reloj", "audífonos", "camisa", "zapatos", "pantalón"]
 
 
 if __name__ == "__main__":

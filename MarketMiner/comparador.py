@@ -1,6 +1,6 @@
 import tkinter as tk
 import threading
-from scrape import MercadoLibre, Exito, Linio
+from MarketMiner.scrape import MercadoLibre, Exito, Linio
 
 # Ventana principal, contiene un FrameHome y un FrameShops
 class Interface(tk.Tk):

@@ -2,7 +2,7 @@ import tkinter as tk
 import threading
 import time
 import webbrowser
-import scrape
+import MarketMiner.scrape as scrape
 
 
 

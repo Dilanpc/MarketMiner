@@ -4,7 +4,8 @@ from selenium import webdriver
 import datetime
 import pandas as pd
 import threading
-import csv_utils as csv
+import MarketMiner.csv_utils as csv
+
 
 class ValueNotFoundByAttr(Exception):
     pass
