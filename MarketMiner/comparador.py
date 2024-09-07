@@ -174,7 +174,7 @@ class SearchResult(tk.Frame):
                 self.inner_frame,
                 anchor="w",
                 text=self.data[i].name + "  $" + str(self.data[i].price),
-                command=lambda : self._go_to_link(self.data[i].link))
+                command=lambda link=self.data[i].link : self._go_to_link(link))
                 )
 
         for button, i in zip(self.buttons, range(len(self.buttons))):
