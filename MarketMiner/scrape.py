@@ -145,7 +145,12 @@ class ProductCard():
         # Obtener todos los tags con los atributos especificados en cada section
         result = []
         for i in range(len(sections)):
-            result = result + sections[i].find_all(attrs=attrs)
+            if 'etiqueta' in attrs: # Añadir opción de buscar por etiqueta
+                etiqueta = attrs['etiqueta']
+                del attrs['etiqueta']
+                result += sections[i].find_all(etiqueta, attrs=attrs)
+            else:
+                result += sections[i].find_all(attrs=attrs)
             
         # Filtrar los tags que no contienen las clases excluidas
         filtered = []
@@ -314,7 +319,7 @@ class MercadoLibre(Products):
         self.__CARD_DATA2 = [
             [{"class":"poly-box"}],
             [{"class":"andes-money-amount andes-money-amount--cents-superscript"}, {"class":"andes-money-amount__fraction"}],
-            [{"class":"poly-component__title"}],
+            [{"class":"poly-box"}, {"etiqueta":"a"}],
             {"class":"poly-coupon"},
             {"class":"poly-component__buy-box"}, # No funciona
             {}
