@@ -5,3 +5,4 @@ selenium
 pandas
 openpyxl
 matplotlib
+PySide6
