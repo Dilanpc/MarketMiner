@@ -79,8 +79,11 @@ class Header(QFrame):
         self.setLayout(layout)
 
     def search(self): # enviar la búsqueda a frameShops, se ejecuta al presionar el botón o al presionar enter en el cuadro de búsqueda
-        self.button.setEnabled(False)
-        self.parent().frameShops.search(self.entry.text())
+        if self.button.isEnabled():
+            self.button.setEnabled(False)
+            self.parent().frameShops.search(self.entry.text())
+        else:
+            print("no se puede buscar, aún se están cargando los resultados")
 
         
 
