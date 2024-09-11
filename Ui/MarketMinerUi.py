@@ -140,6 +140,13 @@ class Shop(QWidget):
         # Título
         self.title = QLabel(self)
         self.title.setAlignment(Qt.AlignCenter)
+        self.title.setStyleSheet(
+            """
+            color: black;
+            font-size: 16px;
+            font-weight: bold;
+            """
+        )
 
         # Ecommerce
         self.ecommerce = None
@@ -217,11 +224,70 @@ class Results(QScrollArea):
 
         self.setWidgetResizable(True)
         self.setFrameShape(QFrame.Panel)
-        self.setStyleSheet(
-            """
-            background-color: #444,
-            """
-        )
+        self.setStyleSheet("""
+        QScrollBar:vertical {
+            border: none;
+            background: transparent;
+            width: 12px;
+            margin: 0px 0px 0px 0px;
+            padding: 0px 4px;
+        }
+        QScrollBar::vertical:hover {
+            padding: 0px 2px;
+        }
+
+        QScrollBar::handle:vertical {
+            background: #ccc;
+            min-height: 20px;
+            border-radius: 2px;
+        }
+        QScrollBar::handle:vertical:hover {
+            border-radius: 4px;
+        }
+        QScrollBar::handle:vertical:pressed {
+            background: #ddd;
+        }
+                           
+                           
+        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+            height: 0px;
+            background: none;
+        }
+        QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+                background: #aaa;
+            }
+                           
+        QScrollBar:horizontal {
+            border: none;
+            background: transparent;
+            height: 12px;
+            margin: 0px 0px 0px 0px;
+            padding: 4px 0px;
+        }
+        QScrollBar::horizontal:hover {
+            padding: 2px 0px;
+        }
+        
+        QScrollBar::handle:horizontal {
+            background: #ccc;
+            min-width: 20px;
+            border-radius: 2px;
+        }
+        QScrollBar::handle:horizontal:hover {
+            border-radius: 4px;
+        }
+        QScrollBar::handle:horizontal:pressed {
+            background: #ddd;
+        }
+
+        QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+            background: none;
+            width: 0px;
+        }
+        QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+            background: #aaa;
+        }
+        """)
 
         self.buttons = []
 
