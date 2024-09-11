@@ -347,9 +347,11 @@ class MercadoLibre(Products):
 
         except ValueNotFoundByAttr:
             print("Usando segunda estructura")
-
-            return super()._compute_products(product_section_attrs, product_card_attrs, self.__CARD_DATA2)
-
+            try:
+                return super()._compute_products(product_section_attrs, product_card_attrs, self.__CARD_DATA2)
+            except Exception as e:
+                print(e)
+                return None
 
 
 

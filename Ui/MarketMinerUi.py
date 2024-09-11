@@ -123,7 +123,7 @@ class FrameShops(QFrame):
     
     def reactivateButton(self):
         if all((not shop._loading) for shop in self.shops):
-            self.parent().header.button.setEnabled(True)
+            self.parent().searchButtonState(True)
 
 
 
@@ -143,13 +143,13 @@ class Shop(QWidget):
 
         # Ecommerce
         self.ecommerce = None
-        self._thread = None
         self._loading = False
 
         # Scroll Area / Results
         self.results = Results(self)
+        self.last_query = ""
 
-        # Botones
+        # Botones o demás widgets dentro
         self.buttons: list = []
 
         # Layout
@@ -167,7 +167,13 @@ class Shop(QWidget):
     def updateProducts(self, products=None):
         if products is None:
             products = self.ecommerce.products
-        self.results.updateButtons(products)
+
+        
+        if len(products) == 0:
+            print("No se encontraron productos")
+            self.results.noResults()
+        else:
+            self.results.updateButtons(products)
 
         self._loading = False
         self.parent().reactivateButton() # Intentar reactivar el botón de búsqueda
@@ -179,7 +185,9 @@ class Shop(QWidget):
         return self.ecommerce.products
     
     def search_products(self, query): # Buscar productos en un hilo
+        self.last_query = query
         self._loading = True
+        self.parent().parent().searchButtonState(False)
         self.results.clear()
         self.thread = SearchThread(self, query)
         self.thread.ready.connect(self.updateProducts) # Actualizar interfaz al terminar
@@ -226,7 +234,7 @@ class Results(QScrollArea):
         self.setWidget(self.widget)
 
 
-
+    # Elimina botones actuales, y crea nuevos botones con los productos
     def updateButtons(self, products):
         self.clear()
 
@@ -235,12 +243,25 @@ class Results(QScrollArea):
             self.buttons.append(ProductButton(self.widget, product))
             self.layout.addWidget(self.buttons[-1])
 
+    # Limpia layout
     def clear(self):
         self.parent().ecommerce.clean_up()
         for button in self.buttons:
             self.layout.removeWidget(button)
-            button.deleteLater()  # Elimina los botones antiguos de la interfaz
+            button.deleteLater()
         self.buttons = []
+
+    def noResults(self):
+        self.buttons.append(QLabel(self.widget))
+        self.buttons[-1].setText("No se encontraron resultados.\n¿Intentar de nuevo?")
+        self.buttons[-1].setAlignment(Qt.AlignCenter)
+        self.layout.addWidget(self.buttons[-1])
+
+        self.buttons.append(QPushButton(self.widget))
+        self.buttons[-1].setText("Reintentar busqueda")
+        self.buttons[-1].clicked.connect(lambda: self.parent().search_products(self.parent().last_query))
+        self.layout.addWidget(self.buttons[-1])
+
 
 
 
@@ -286,3 +307,5 @@ class MarketMinerTab(QWidget):
 
         self.setLayout(layout)
 
+    def searchButtonState(self, state: bool):
+        self.header.button.setEnabled(state)
