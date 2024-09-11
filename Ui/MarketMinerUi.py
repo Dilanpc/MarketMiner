@@ -40,6 +40,7 @@ class Header(QFrame):
             color: #eee;
             """
         )
+        self.entry.returnPressed.connect(self.search)
 
 
 
@@ -77,7 +78,7 @@ class Header(QFrame):
 
         self.setLayout(layout)
 
-    def search(self): # enviar la búsqueda a frameShops
+    def search(self): # enviar la búsqueda a frameShops, se ejecuta al presionar el botón o al presionar enter en el cuadro de búsqueda
         self.button.setEnabled(False)
         self.parent().frameShops.search(self.entry.text())
 
@@ -294,7 +295,8 @@ class Results(QScrollArea):
         self.widget = QWidget(self)
         self.widget.setSizePolicy(QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum))
         self.layout = QVBoxLayout(self.widget)
-        self.layout.setSpacing(2)
+        self.layout.setSpacing(0)
+        self.layout.setContentsMargins(5, 5, 5, 5)
 
 
         self.setWidget(self.widget)
@@ -338,10 +340,21 @@ class ProductButton(QPushButton):
 
         self.setStyleSheet(
             """
-            background-color: #444;
-            color: white;
-            text-align: left;
-
+            QPushButton {
+                color: white;
+                text-align: left;
+                background-color: #444;
+                padding: 8px;
+                border-radius: 5px;
+                margin: 2px;
+            }
+            QPushButton:hover {
+                background-color: #555;
+                margin: 0;
+            }
+            QPushButton:pressed {
+                background-color: #333;
+            }
             """
         )
 
