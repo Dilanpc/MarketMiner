@@ -3,3 +3,8 @@ __pycache__/
 reports/
 drivers/*.exe
 test/
+
+# Output
+build/
+dist/
+main.spec
