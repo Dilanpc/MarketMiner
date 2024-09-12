@@ -2,7 +2,7 @@ from PySide6.QtWidgets import (QWidget, QFrame, QVBoxLayout, QHBoxLayout, QLabel
     QLineEdit, QPushButton, QSizePolicy, QScrollArea
 )
 from PySide6.QtCore import Qt, QThread, Signal
-
+import webbrowser
 
 from MarketMiner.scrape import MercadoLibre, Exito, Linio
 
@@ -160,13 +160,16 @@ class Shop(QWidget):
         self.results = Results(self)
         self.last_query = ""
 
-        # Botones o demás widgets dentro
-        self.buttons: list = []
+        # Información del producto seleccionado
+        self.product_info = ProductInfo(self)
+        self.product_info.hide()
+
 
         # Layout
         layout = QVBoxLayout(self)
         layout.addWidget(self.title)
         layout.addWidget(self.results)
+        layout.addWidget(self.product_info)
 
 
 
@@ -204,7 +207,10 @@ class Shop(QWidget):
         self.thread.ready.connect(self.updateProducts) # Actualizar interfaz al terminar
         self.thread.start()
 
-
+    def showProduct(self, product):
+        print("mostrando: ", product.name)
+        self.product_info.setProduct(product)
+        self.product_info.show()
     
 
         
@@ -311,7 +317,7 @@ class Results(QScrollArea):
 
         # Crear nuevos botones y agregarlos al layout
         for product in products:
-            self.buttons.append(ProductButton(self.widget, product))
+            self.buttons.append(ProductButton(self, product))
             self.layout.addWidget(self.buttons[-1])
 
     # Limpia layout
@@ -326,20 +332,35 @@ class Results(QScrollArea):
         self.buttons.append(QLabel(self.widget))
         self.buttons[-1].setText("No se encontraron resultados.\n¿Intentar de nuevo?")
         self.buttons[-1].setAlignment(Qt.AlignCenter)
+        self.buttons[-1].setStyleSheet("color: black;")
         self.layout.addWidget(self.buttons[-1])
 
         self.buttons.append(QPushButton(self.widget))
         self.buttons[-1].setText("Reintentar busqueda")
+        self.buttons[-1].setStyleSheet("""
+            QPushButton {
+                color: white;
+                background-color: #444;
+            }
+            QPushButton:hover {
+                background-color: #555;
+            }
+            QPushButton:pressed {
+                background-color: #333;
+            }
+            """
+        )
         self.buttons[-1].clicked.connect(lambda: self.parent().search_products(self.parent().last_query))
         self.layout.addWidget(self.buttons[-1])
 
-
+    def showProduct(self, product):
+        self.parent().showProduct(product)
 
 
 
 class ProductButton(QPushButton):
-    def __init__(self, parent, product) -> None:
-        super().__init__(parent)
+    def __init__(self, scrollArea: Results, product) -> None:
+        super().__init__(scrollArea.widget)
 
         self.setStyleSheet(
             """
@@ -363,10 +384,50 @@ class ProductButton(QPushButton):
 
         self.product = product
         self.setText(product.name + " \n$" + str(product.price))
-        self.clicked.connect(self.showProduct)
+        self.clicked.connect(lambda e, sa=scrollArea: sa.showProduct(self.product))
 
-    def showProduct(self):
-        pass
+
+
+
+
+class ProductInfo(QFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.name = QLabel(self)
+        self.name.setWordWrap(True)
+        self.name.setStyleSheet(
+            """
+            color: black;
+            font-size: 14px;
+            """
+        )
+
+        self.price = QLabel(self)
+        self.price.setStyleSheet(
+            """
+            color: black;
+            """
+        )
+
+        self.link = QPushButton(self)
+        self.link.setText("Ir al sitio")
+        self.link.clicked.connect(lambda: print("Sin conexión con producto"))
+
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.name)
+        layout.addWidget(self.price)
+        layout.addWidget(self.link)
+        
+    
+    def setProduct(self, product):
+        self.name.setText(product.name)
+        self.price.setText('$ ' + str(product.price))
+        self.link.clicked.disconnect()
+        self.link.clicked.connect(lambda e, p=product: self.openLink(p.link))
+
+    def openLink(self, link:str):
+        webbrowser.open(link)
 
 
 
