@@ -205,9 +205,14 @@ class Products(Page):
         super().__init__(link, use_selenium=self.SELENIUM)
 
     def search_products(self, link: str):
-        self._enter_webpage(link)
-        self._compute_products()
-        self._compute_info()
+        try:
+            self._enter_webpage(link)
+            self._compute_products()
+            self._compute_info()
+        except Exception as e:
+            print("Error en ", self.page_name, ": ")
+            print(e)
+
 
     def get_product_by_link(self, link: str):
         self._enter_webpage(link)
@@ -347,12 +352,7 @@ class MercadoLibre(Products):
 
         except ValueNotFoundByAttr:
             print("Usando segunda estructura")
-            try:
-                return super()._compute_products(product_section_attrs, product_card_attrs, self.__CARD_DATA2)
-            except Exception as e:
-                print(e)
-                return None
-
+            return super()._compute_products(product_section_attrs, product_card_attrs, self.__CARD_DATA2)
 
 
 class Exito(Products):
