@@ -208,10 +208,10 @@ class Shop(QWidget):
         self.thread.start()
 
     def showProduct(self, product):
-        print("mostrando: ", product.name)
         self.product_info.setProduct(product)
         self.product_info.show()
-    
+    def hideProduct(self):
+        self.product_info.hide()
 
         
 
@@ -353,8 +353,11 @@ class Results(QScrollArea):
         self.buttons[-1].clicked.connect(lambda: self.parent().search_products(self.parent().last_query))
         self.layout.addWidget(self.buttons[-1])
 
+    # Mostrar información del producto, se usan funciones de Shop
     def showProduct(self, product):
         self.parent().showProduct(product)
+    def hideProduct(self):
+        self.parent().hideProduct()
 
 
 
@@ -394,6 +397,13 @@ class ProductInfo(QFrame):
     def __init__(self, parent):
         super().__init__(parent)
 
+        self.setStyleSheet(
+            """
+            background-color: #ccc;
+            """
+        )
+
+
         self.name = QLabel(self)
         self.name.setWordWrap(True)
         self.name.setStyleSheet(
@@ -412,12 +422,55 @@ class ProductInfo(QFrame):
 
         self.link = QPushButton(self)
         self.link.setText("Ir al sitio")
+        self.link.setStyleSheet(
+            """
+            QPushButton {
+                color: white;
+                background-color: #445;
+                border-radius: 5px;
+                margin: 0;
+                padding: 5px;
+            }
+            QPushButton:hover {
+                background-color: #89c3ff;
+            }
+            QPushButton:pressed {
+                background-color: #242e45;
+            }
+            """
+        )
         self.link.clicked.connect(lambda: print("Sin conexión con producto"))
 
+        self.closeButton = QPushButton(self)
+        self.closeButton.setText("X")
+        self.closeButton.setSizePolicy(QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum))
+        self.closeButton.setStyleSheet(
+            """
+            QPushButton {
+                color: white;
+                background-color: #544;
+                border-radius: 5px;
+                margin: 0;
+                padding: 5px 10px;
+            }
+            QPushButton:hover {
+                background-color: #780b0b;
+            }
+            QPushButton:pressed {
+                background-color: #433;
+            }
+            """
+        )
+        self.closeButton.clicked.connect(self.parent().hideProduct)
+
         layout = QVBoxLayout(self)
+        layout.addWidget(self.closeButton, 0, Qt.AlignRight)
         layout.addWidget(self.name)
         layout.addWidget(self.price)
-        layout.addWidget(self.link)
+        sublayout = QHBoxLayout()
+        sublayout.addWidget(self.link)
+        sublayout.addWidget(self.closeButton)
+        layout.addLayout(sublayout)
         
     
     def setProduct(self, product):
