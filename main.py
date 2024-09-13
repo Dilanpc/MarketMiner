@@ -1,11 +1,7 @@
-"""
-    Este archivo es el punto de entrada de la aplicación.
-    Redirige la ejecución al módulo MarketMiner/__main__.py
-"""
-
-from MarketMiner import __main__ as marketminer
+from Ui.interface import Interface
 def main():
-    return marketminer.main()
+    app = Interface()
+    return app.exec()
 
 
 

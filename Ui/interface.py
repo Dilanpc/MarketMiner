@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QTabWidget, QHBoxLayout
+from PySide6.QtWidgets import QApplication, QWidget, QTabWidget, QHBoxLayout
 
 from .MarketMinerUi import MarketMinerTab
 
@@ -7,6 +7,8 @@ from .MarketMinerUi import MarketMinerTab
 
 class Interface(QWidget):
     def __init__(self):
+        self.app = QApplication([])
+
         super().__init__()
         self.setWindowTitle("MarketMiner")
         self.setGeometry(100, 100, 800, 600)
@@ -50,3 +52,6 @@ class Interface(QWidget):
 
         self.setLayout(layout)
 
+    def exec(self):
+        self.show()
+        return self.app.exec()
