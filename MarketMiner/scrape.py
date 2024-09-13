@@ -404,7 +404,7 @@ class Linio(Products):
             [{"class":"prices-0"}, {"class": "primary"}], # Atributos para precio
             [{"class":"pod-link"}], # Atributos para link
             {}, # Atributos excluidos para nombre
-            {}, # Atributos excluidos para precio
+            {"class":"discount-badge-item"}, # Atributos excluidos para precio
             {}  # Atributos excluidos para link
         ]
 
