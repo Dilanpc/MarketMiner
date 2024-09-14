@@ -175,6 +175,19 @@ class ProductCard():
             if c.isdigit():
                 self.price += c
         self.price = int(self.price)
+
+        # Añadir puntos para separar miles en price_txt
+        desfase = len(str(self.price)) % 3
+        if desfase == 0: desfase = 3
+        self.price_txt = ""
+        for c in str(self.price):
+            self.price_txt += c
+            desfase -= 1
+            if desfase == 0:
+                self.price_txt += "."
+                desfase = 3
+        self.price_txt = self.price_txt[:-1] # Eliminar el último punto
+            
         return self.price
     
     #Getters
@@ -296,6 +309,13 @@ class Products(Page):
         self.prices = []
         self.links = []
         self.link = ""
+
+    def sort_by_price(self, reverse=False):
+        self.products.sort(key=lambda product: product.price, reverse=reverse)
+        self.names, self.prices, self.links = [], [], []
+        self.names = [product.name for product in self.products]
+        self.prices = [product.price for product in self.products]
+        self.links = [product.link for product in self.products]
     
     def average_price(self):
         return sum([int(product.price) for product in self.products]) / len(self.products)

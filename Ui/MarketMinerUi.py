@@ -1,5 +1,5 @@
-from PySide6.QtWidgets import (QWidget, QFrame, QVBoxLayout, QHBoxLayout, QLabel,
-    QLineEdit, QPushButton, QSizePolicy, QScrollArea
+from PySide6.QtWidgets import (QWidget, QFrame, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel,
+    QLineEdit, QPushButton, QSizePolicy, QScrollArea, QCheckBox
 )
 from PySide6.QtCore import Qt, QThread, Signal
 import webbrowser
@@ -68,22 +68,38 @@ class Header(QFrame):
         )
         self.button.clicked.connect(self.search)
 
+        # Opciones
+        options = QWidget(self)
+        options_layout = QVBoxLayout(options)
+        self.sorted = QCheckBox(options)
+        self.sorted.setText("Ordenar por precio")
+        self.sorted.setStyleSheet(
+            """
+            font-size: 14px;
+            """
+        )
+        self.sorted.stateChanged.connect(lambda: self.parent().sort_by_price(self.sorted.isChecked()))
+
+        options_layout.addWidget(self.sorted, 0, Qt.AlignCenter)
 
 
         # Layout
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.title)
-        layout.addWidget(self.entry, 0, Qt.AlignHCenter)
-        layout.addWidget(self.button, 0, Qt.AlignHCenter)
+        layout = QGridLayout(self)
+
+        layout.addWidget(self.title, 0, 0, 1, 3)
+        layout.addWidget(self.entry, 1, 1, Qt.AlignHCenter)
+        layout.addWidget(self.button, 2, 1, Qt.AlignHCenter)
+        layout.addWidget(options, 0, 2, 3, 1)
+
 
         self.setLayout(layout)
 
     def search(self): # enviar la búsqueda a frameShops, se ejecuta al presionar el botón o al presionar enter en el cuadro de búsqueda
-        if self.button.isEnabled():
+        if self.button.isEnabled() and self.entry.text() != "":
             self.button.setEnabled(False)
             self.parent().frameShops.search(self.entry.text())
         else:
-            print("no se puede buscar, aún se están cargando los resultados")
+            print("Aún no se ha terminado la búsqueda anterior o no se ha ingresado texto")
 
         
 
@@ -129,7 +145,9 @@ class FrameShops(QFrame):
         if all((not shop._loading) for shop in self.shops):
             self.parent().searchButtonState(True)
 
-
+    def sort_by_price(self, value: bool):
+        for shop in self.shops:
+            shop.sort_by_price(value)
 
 
 class Shop(QWidget):
@@ -155,6 +173,7 @@ class Shop(QWidget):
         # Ecommerce
         self.ecommerce = None
         self._loading = False
+        self._sorted = False
 
         # Scroll Area / Results
         self.results = Results(self)
@@ -181,7 +200,8 @@ class Shop(QWidget):
     def updateProducts(self, products=None):
         if products is None:
             products = self.ecommerce.products
-
+        if self._sorted:
+            self.ecommerce.sort_by_price()
         
         if len(products) == 0:
             print("No se encontraron productos")
@@ -202,10 +222,23 @@ class Shop(QWidget):
         self.last_query = query
         self._loading = True
         self.parent().parent().searchButtonState(False)
-        self.results.clear()
+        self.clearWidget()
         self.thread = SearchThread(self, query)
         self.thread.ready.connect(self.updateProducts) # Actualizar interfaz al terminar
         self.thread.start()
+
+    def sort_by_price(self, value: bool):
+        self._sorted = value
+        if value and not self._loading:
+            self.ecommerce.sort_by_price()
+            self.results.updateButtons(self.ecommerce.products)
+
+
+
+    def clearWidget(self):
+        self.ecommerce.clean_up()
+        self.results.clear()
+        self.hideProduct()
 
     def showProduct(self, product):
         self.product_info.setProduct(product)
@@ -322,7 +355,6 @@ class Results(QScrollArea):
 
     # Limpia layout
     def clear(self):
-        self.parent().ecommerce.clean_up()
         for button in self.buttons:
             self.layout.removeWidget(button)
             button.deleteLater()
@@ -386,7 +418,7 @@ class ProductButton(QPushButton):
         )
 
         self.product = product
-        self.setText(product.name + " \n$" + str(product.price))
+        self.setText(product.name + " \n$" + product.price_txt)
         self.clicked.connect(lambda e, sa=scrollArea: sa.showProduct(self.product))
 
 
@@ -432,7 +464,7 @@ class ProductInfo(QFrame):
                 padding: 5px;
             }
             QPushButton:hover {
-                background-color: #89c3ff;
+                background-color: #687aa4;
             }
             QPushButton:pressed {
                 background-color: #242e45;
@@ -505,3 +537,6 @@ class MarketMinerTab(QWidget):
 
     def searchButtonState(self, state: bool):
         self.header.button.setEnabled(state)
+
+    def sort_by_price(self, value: bool):
+        self.frameShops.sort_by_price(value)
