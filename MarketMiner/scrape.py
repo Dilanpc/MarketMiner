@@ -232,6 +232,7 @@ class Products(Page):
         return self._compute_one_product(link)
 
     def _compute_info(self):
+        self.prices, self.names, self.links = [], [], []
         for product in self.products:
             self.prices.append(product.price)
             self.names.append(product.name)
@@ -364,6 +365,8 @@ class MercadoLibre(Products):
         EXCLUDED_ATTR_PRICE = {"class":"ui-pdp-price__original-value"}
         product = ProductCard(section, ATTR_NAME, ATTR_PRICE, exc_attrs_price=EXCLUDED_ATTR_PRICE)
         product.link = link
+        self.products.append(product)
+        self._compute_info()
         return product
 
     def _compute_products(self, product_section_attrs: dict = {"class": "ui-search-layout"}, product_card_attrs: dict = {"class": "ui-search-layout__item"}, card_data: list = None):

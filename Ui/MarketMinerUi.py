@@ -76,6 +76,7 @@ class Header(QFrame):
         self.sorted.setStyleSheet(
             """
             font-size: 14px;
+            color: black;
             """
         )
         self.sorted.stateChanged.connect(lambda: self.parent().sort_by_price(self.sorted.isChecked()))
