@@ -41,7 +41,11 @@ class ReportsManager:
         except Exception as e:
             print(f'Error al escribir el archivo: {e}')
             return False
-        
+    
+    # Escribe la información actual en el archivo json
+    def update_file(self):
+        self.write(self.data, update=False)
+
     def _update_reports(self):
         self.reports = []
         for item in self.data:
@@ -49,7 +53,7 @@ class ReportsManager:
     
     def add(self, data):
         self.data.append(data)
-        self.write(self.data, update=False)
+        self.update_file()
         self._update_reports()
 
     def clear_file(self):
@@ -69,6 +73,23 @@ class ReportsManager:
         if key:
             return self.reports[index][key]
         return self.reports[index]
+    
+    # Cambia los datos de un reporte y actualiza el archivo json
+    def set_by_dict(self, index:int, data:dict, update_file=True):
+        self[index].set_data(data)
+        if update_file:
+            self.data[index] = data
+            self.update_file()
+    
+    def set_by_key(self, index:int, key:str, value, update_file=True):
+        data = self[index].data # obtener datos guardados en el Report
+        data[key] = value # Cambiar el valor de la clave
+        self[index].set_data(data) # Actualizar los datos del Report
+
+        if update_file:
+            self.data[index] = data # Actualizar los datos del archivo json
+            self.update_file()
+
 
 
     def print(self):
@@ -80,12 +101,14 @@ class Report:
     def __init__(self, data:dict):
         self.data = data
         self.ecommerce = None
-        self.set_data(data)
+        self.set_data()
 
     # Actualiza los datos del reporte, si no se ingresan los datos, se reutilizan los datos anteriores
     def set_data(self, data:dict=None):
-        self.data = data
+        if data:
+            self.data = data
         self.compute()
+
 
     def compute(self):
         self.set_ecommerce()
