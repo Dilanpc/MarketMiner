@@ -1,8 +1,12 @@
 __pycache__/
 .venv/
-reports/
 drivers/*.exe
 test/
+
+# Reports
+reports/
+userReports/
+reportingData.json
 
 # Output
 build/

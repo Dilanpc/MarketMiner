@@ -295,6 +295,7 @@ class FrameResult{
 - openpyxl
 - matplotlib
 - selenium
+- PySide6
 
 ## Reportes
 [Reporte de datos](https://unaledu-my.sharepoint.com/:f:/g/personal/diporrasc_unal_edu_co/EgGtalNhip1EqE6p7OGyqIIB4OAbREHbszYB5mtlMhiqcA?e=m3yN1G)

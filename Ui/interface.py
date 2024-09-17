@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QApplication, QWidget, QTabWidget, QHBoxLayout
 
 from .MarketMinerUi import MarketMinerTab
+from .ReportsUi import ReportsTab
 
 
 
@@ -41,8 +42,14 @@ class Interface(QWidget):
 
             """
         )
-        self.tabs.addTab(MarketMinerTab(), "Market Miner")
-        self.tabs.addTab(QWidget(), "Wiki Miner")
+        self.tab1 = MarketMinerTab(self)
+        self.tab2 = ReportsTab(self)
+        self.tab3 = QWidget(self)
+        self.tabs.addTab(self.tab1, "Market Miner")
+        self.tabs.addTab(self.tab2, "Reports")
+        self.tabs.addTab(self.tab3, "Wiki Miner")
+
+        self.reportManager = self.tab2.reportManager # referencia al reportManager
 
 
         layout = QHBoxLayout(self)

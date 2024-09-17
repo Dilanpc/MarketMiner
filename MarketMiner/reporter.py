@@ -6,7 +6,7 @@ import MarketMiner.scrape as scrape
 """ Guarda y lee archivos json para ejecutar reports de
 según los datos del archivo json
 """
-class ReportsManager:
+class ReportManager:
     def __init__(self, ruta:str):
         self.ruta = ruta # Ruta del archivo json
         self.data:list[dict] = None # Datos del archivo json
@@ -51,7 +51,7 @@ class ReportsManager:
         for item in self.data:
             self.reports.append(Report(item))
     
-    def add(self, data):
+    def add(self, data:dict):
         self.data.append(data)
         self.update_file()
         self._update_reports()
@@ -112,6 +112,7 @@ class Report:
 
     def compute(self):
         self.set_ecommerce()
+        self.name = self.data['name']
         self.query = self.data['query']
         self.product = self.data['product']
         self.reportPath = self.data['reportPath']
@@ -119,7 +120,7 @@ class Report:
         
     def set_ecommerce(self):
         try:
-            self.ecommerce = getattr(scrape, self.data['clase'])() # Instancia de la clase
+            self.ecommerce = getattr(scrape, self.data['class'])() # Instancia de la clase
 
         except Exception as e:
             print(f'Error al crear el ecommerce: {e}')

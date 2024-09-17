@@ -518,7 +518,7 @@ class ProductInfo(QFrame):
 
 
 class MarketMinerTab(QWidget):
-    def __init__(self, parent = None,) -> None:
+    def __init__(self, parent) -> None:
         super().__init__(parent)
 
         self.setContentsMargins(0, 0, 0, 0)
