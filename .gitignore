@@ -2,6 +2,7 @@ __pycache__/
 .venv/
 drivers/*.exe
 test/
+images/
 
 # Reports
 reports/

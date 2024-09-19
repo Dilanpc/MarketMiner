@@ -1,17 +1,28 @@
-from PySide6.QtWidgets import QApplication, QWidget, QTabWidget, QHBoxLayout
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QTabWidget
+from PySide6.QtGui import QIcon
+import os
+import sys
 
 from .MarketMinerUi import MarketMinerTab
 from .ReportsUi import ReportsTab
 
 
 
-
-class Interface(QWidget):
+class Interface(QMainWindow):
     def __init__(self):
         self.app = QApplication([])
 
         super().__init__()
         self.setWindowTitle("MarketMiner")
+        
+        # Icono
+        if getattr(sys, 'frozen', False): # Cuando se ejecuta desde el ejecutable
+            base_path = sys._MEIPASS
+        else: # Cuando se ejecuta en desarrollo
+            base_path = os.path.abspath(".")
+        icon_path = os.path.join(base_path, "images", "icon.ico")
+        self.setWindowIcon(QIcon(icon_path))
+
         self.setGeometry(100, 100, 800, 600)
         self.setStyleSheet(
             """
@@ -52,12 +63,7 @@ class Interface(QWidget):
         self.reportManager = self.tab2.reportManager # referencia al reportManager
 
 
-        layout = QHBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.tabs)
-
-
-        self.setLayout(layout)
+        self.setCentralWidget(self.tabs)
 
     def exec(self):
         self.show()
