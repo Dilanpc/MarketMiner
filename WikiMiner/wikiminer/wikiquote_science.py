@@ -21,7 +21,7 @@ class WikiQuoteScience(WikiPage):
         sections = main_content.find_all(['h2', 'ul'])  # Encuentra todos los encabezados y listas en el contenido
 
         filtered_sections = []  # Lista para almacenar las secciones relevantes
-        in_relevant_section = False  # Bandera para determinar si estamos en una sección relevante
+        in_relevant_section = False  # Bandera para determinar si se encuentra en una sección relevante
         for section in sections:
             if section.name == 'h2':  # Verifica si el elemento es un encabezado
                 # Si se encuentra el encabezado de "Citas", se activa la captura de citas
@@ -30,7 +30,7 @@ class WikiQuoteScience(WikiPage):
                 # Si se encuentran encabezados de secciones no deseadas, se desactiva la captura
                 elif any(x in section.text for x in ['Refranes', 'Dichos', 'Proverbios']):
                     in_relevant_section = False
-            # Si estamos dentro de la sección relevante, capturamos el contenido
+            # Si se encuentra dentro de la sección relevante, se captura el contenido
             if in_relevant_section:
                 filtered_sections.append(section)  # Agregar la sección relevante a la lista
         return filtered_sections  # Retornar las secciones filtradas
