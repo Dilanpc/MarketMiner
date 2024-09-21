@@ -1,4 +1,5 @@
 import json
+import os
 
 import MarketMiner.scrape as scrape
 
@@ -9,6 +10,10 @@ según los datos del archivo json
 class ReportManager:
     def __init__(self, ruta:str):
         self.ruta = ruta # Ruta del archivo json
+        # verificar si existe directorio, si no, crearlo
+        if not os.path.exists(os.path.dirname(ruta)):
+            os.makedirs(os.path.dirname(ruta))
+
         self.data:list[dict] = None # Datos del archivo json
         self.reports:list[Report] = []
         self.read()
