@@ -17,10 +17,10 @@ class Csv():
         if file == None: file = self.file
 
         if not os.path.exists(file):
-            with open(file, 'w') as archivo_csv:
+            with open(file, 'w', encoding='utf-8') as archivo_csv:
                 pass # Crea el archivo si no existe
 
-        with open(file, 'r') as archivo_csv:
+        with open(file, 'r', encoding='utf-8') as archivo_csv:
             lector = csv.reader(archivo_csv)
             return [list(fila) for fila in lector]
 
@@ -29,7 +29,7 @@ class Csv():
         # Si el archivo ya tiene contenido, este se sobreescribe
         if file == None: file = self.file
 
-        with open(file, 'w', newline='') as archivo_csv:
+        with open(file, 'w', newline='', encoding='utf-8') as archivo_csv:
             escritor = csv.writer(archivo_csv)
             escritor.writerows(data)
         if update_matrix:
@@ -43,7 +43,7 @@ class Csv():
             print('No hay datos para agregar')
             return None
         
-        with open(file, 'a', newline='') as archivo_csv:
+        with open(file, 'a', newline='', encoding='utf-8') as archivo_csv:
             escritor = csv.writer(archivo_csv)
             if isinstance(lista[0], list):
                 escritor.writerows(lista)
