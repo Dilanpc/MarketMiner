@@ -24,7 +24,8 @@ class ReportManager:
             print("Creando archivo")
             with open(self.ruta, 'w', encoding='utf-8') as file:
                 json.dump([], file, indent=4)
-            return None
+            self.data = []
+            return self.data
 
         except Exception as e:
             print(f'Error al leer el archivo: {e}')
@@ -46,16 +47,19 @@ class ReportManager:
     def update_file(self):
         self.write(self.data, update=False)
 
+    # Actualiza la lista de reportes
     def _update_reports(self):
         self.reports = []
         for item in self.data:
             self.reports.append(Report(item))
     
+    # Añade un reporte a la lista de reportes y actualiza el archivo json
     def add(self, data:dict):
         self.data.append(data)
         self.update_file()
         self._update_reports()
 
+    # Limpia el archivo json
     def clear_file(self):
         self.write([])
         self.data = []
@@ -81,6 +85,7 @@ class ReportManager:
             self.data[index] = data
             self.update_file()
     
+    # Cambia el valor de una clave de un reporte y actualiza el archivo json
     def set_by_key(self, index:int, key:str, value, update_file=True):
         data = self[index].data # obtener datos guardados en el Report
         data[key] = value # Cambiar el valor de la clave
@@ -109,7 +114,7 @@ class Report:
             self.data = data
         self.compute()
 
-
+    # Guarda los datos del reporte en variables de la instancia. Inicializa el ecommerce
     def compute(self):
         self.set_ecommerce()
         self.name = self.data['name']
