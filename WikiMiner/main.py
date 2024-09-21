@@ -1,5 +1,6 @@
 from wikiminer.wikipedia import Wikipedia
 from wikiminer.wikiquote_science import WikiQuoteScience
+from wikiminer.wikimovie import WikiMovie
 
 if __name__ == "__main__":
     # WIKIQUOTE
@@ -30,3 +31,14 @@ if __name__ == "__main__":
 
     # Llamar al método para encontrar párrafos que contengan las palabras clave
     wikipedia_page.find_keyword(keywords)
+    
+# WIKIMOVIE
+
+    movie = WikiMovie('https://es.wikipedia.org/wiki/Oppenheimer_(pel%C3%ADcula)')
+    details = movie.get_movie_details()
+    print("Título:", details['title'])
+    print("Director:", details['director'])
+    print("Actores:")
+    for actor in details['actors']:
+        print("-", actor)
+    print("Argumento:", details['argument'])
