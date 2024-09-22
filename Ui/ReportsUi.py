@@ -268,7 +268,7 @@ class ReportsTab(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         
-        self.reportManager = ReportManager('reportingData.json')
+        self.reportManager = ReportManager('reportingData.json', 'userReports')
 
 
         self.reportList = ReportList(self)

@@ -8,12 +8,11 @@ import MarketMiner.scrape as scrape
 según los datos del archivo json
 """
 class ReportManager:
-    def __init__(self, ruta:str):
-        self.ruta = ruta # Ruta del archivo json
-        # verificar si existe directorio, si no, crearlo
-        if not os.path.exists(os.path.dirname(ruta)):
-            os.makedirs(os.path.dirname(ruta))
-
+    def __init__(self, json_path:str, reports_path):
+        self.json_path = json_path # Ruta del archivo json
+        self.reports_path = reports_path
+        if not os.path.exists(reports_path):
+            os.makedirs(reports_path)
         self.data:list[dict] = None # Datos del archivo json
         self.reports:list[Report] = []
         self.read()
@@ -21,13 +20,13 @@ class ReportManager:
 
     def read(self):
         try:
-            with open(self.ruta, 'r', encoding='utf-8') as file:
+            with open(self.json_path, 'r', encoding='utf-8') as file:
                 self.data = json.load(file)
             self._update_reports()
             return self.data
         except FileNotFoundError:
             print("Creando archivo")
-            with open(self.ruta, 'w', encoding='utf-8') as file:
+            with open(self.json_path, 'w', encoding='utf-8') as file:
                 json.dump([], file, indent=4)
             self.data = []
             return self.data
@@ -38,7 +37,7 @@ class ReportManager:
 
     def write(self, data:list[dict], update=True):
         try:
-            with open(self.ruta, 'w', encoding='utf-8') as file:
+            with open(self.json_path, 'w', encoding='utf-8') as file:
                 json.dump(data, file, indent=4)
             if update:
                 self.data = data
@@ -126,6 +125,8 @@ class Report:
         self.query = self.data['query']
         self.product = self.data['product']
         self.reportPath = self.data['reportPath']
+        if not os.path.exists(os.path.dirname(self.reportPath)):
+            os.makedirs(self.reportPath)
 
         
     def set_ecommerce(self):
