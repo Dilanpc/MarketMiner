@@ -318,8 +318,7 @@ class WikiPage:
 
 ### Clase Wikipedia:
 
-En segundo lugar, dentro del módulo wikipedia.py se construyó la clase Wikipedia, que es una clase hija de WikiPage y hereda el atributo que define al link de la página. Como el objetivo del sistema que scrapea las páginas de Wikipedia es permitir al usuario la búsqueda de la información de interés con la ayuda del filtrado por palabras clave, se definió un método find_keywords. Este método se encargará de recibir las palabras clave que ingrese el usuario y recorrer los diferentes párrafos de la página para buscar dentro de ellos, los que contengan a las palabras digitadas por el usuario
-
+En segundo lugar, dentro del módulo wikipedia.py se construyó la clase Wikipedia, que es una clase hija de WikiPage y hereda el atributo que define al link de la página. Como el objetivo del sistema que scrapea las páginas de Wikipedia es permitir al usuario la búsqueda de la información de interés con la ayuda del filtrado por palabras clave, se definió un método find_keywords. Este método se encargará de recibir las palabras clave que ingrese el usuario y recorrer los diferentes párrafos de la página para buscar en cada uno de ellos, los que contengan a las palabras. Una vez se encuentren las palabras en algún párrafo, se imprimirá y se seguirán buscando párrafos coincidentes hasta el final de la página. Merece la pena resaltar que los párrafos se buscaron por la etiqueta 'p', por lo que inicialmente se van a registrar todos los elementos de la página asociados a la etiqueta. En el caso de Wikipedia, la etiqueta 'p' unícamente corresponde a los párrafos. 
 
 ``` python
 """
@@ -343,6 +342,45 @@ class Wikipedia(WikiPage):
 ```
 ### Ejecución
 
+Con el objetivo de realizar una prueba correspondiente, se decidió restringir el link de la página de Wikipedia, a la página del [Real Madrid Club de Fútbol](https://es.wikipedia.org/wiki/Real_Madrid_Club_de_Fútbol). Con la idea de probar la ejecución, se usaron la palabra clave "champions", y se ejecutó el código que se muestra a continuación. 
+
+``` python
+# WIKIPEDIA
+    print("----------------------  WIKIPEDIA  ---------------------------")
+    wikipedia_page = Wikipedia('https://es.wikipedia.org/wiki/Real_Madrid_Club_de_Fútbol')
+    
+ # Definir la lista de palabras clave a buscar
+    keywords = []
+    while True:
+        keywords.append(input("Ingrese una palabra clave: "))
+        if keywords[-1] == "salir":
+            keywords.pop()
+            break
+    
+    print(wikipedia_page.get_title())  
+
+    # Llamar al método para encontrar párrafos que contengan las palabras clave
+    wikipedia_page.find_keyword(keywords)
+```
+
+En primer lugar se define el link de la página a scrapear. Luego se le solicita al usuario las palabras clave deseadas y hasta que se ingrese una palabra que rompa la ejecución ("salir"). Posteriormente se llama el método que entrega el título de la página y al método que encuentra los párrafos que contienen a las palabras deseadas. De esta manera se obtiene una ejecución con la siguiente forma: 
+
+```
+----------------------  WIKIPEDIA  ---------------------------
+Ingrese una palabra clave: champion
+Ingrese una palabra clave: salir
+
+Real Madrid Club de Fútbol - Wikipedia, la enciclopedia libre
+
+En la temporada 2022-23, en la jornada 16, el club juega por primera vez en su historia sin ningún español de inicio.[421]​
+
+Adicionalmente, ganó su octavo Mundial de Clubes y su vigésima Copa del Rey tras golear al Barcelona 0-4 en semifinales en el Camp Nou.
+
+Sin embargo, perdió la Supercopa de España por 3-1 frente al F. C. Barcelona en la final, quedó eliminado de la Champions League en semifinales tras perder 4-0 contra el Manchester City de Guardiola y quedó a 10 puntos del líder Barcelona en la Liga.
+
+Aun así, no sobra destacar que alcanzando las semifinales, el Madrid ha llegado a 11 de las últimas 13 semifinales de la Champions League.
+
+``` 
 ### Clase WikiQuoteScience
 
 ### Ejecución
