@@ -121,10 +121,10 @@ class Report:
     # Guarda los datos del reporte en variables de la instancia. Inicializa el ecommerce
     def compute(self):
         self.set_ecommerce()
-        self.name = self.data['name']
-        self.query = self.data['query']
-        self.product = self.data['product']
-        self.reportPath = self.data['reportPath']
+        self.name:int = self.data['name']
+        self.query:int = self.data['query']
+        self.product:str = self.data['product']
+        self.reportPath:str = self.data['reportPath']
         if not os.path.exists(os.path.dirname(self.reportPath)):
             os.makedirs(self.reportPath)
 
@@ -145,7 +145,7 @@ class Report:
         else:
             print("No hay datos para ejecutar el reporte")
             return False
-        self.ecommerce.make_report(self.reportPath)
+        self.ecommerce.make_report(self.reportPath, f"{self.reportPath[:-4]}Links.csv")
         self.ecommerce.clean_up()
         return True
         

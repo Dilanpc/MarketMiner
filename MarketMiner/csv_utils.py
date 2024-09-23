@@ -1,9 +1,6 @@
 import csv
 import os
-try:
-    import pandas as pd
-except ImportError:
-    pass
+import pandas as pd
 
 
 # Maneja archivos csv como una matriz
