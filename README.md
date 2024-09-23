@@ -729,6 +729,9 @@ Argumento: En 1926, el estudiante en doctorado de 22 añosJ. Robert Oppenheimers
 ```
 
 ## Instalación e Uso:
+Para que cada usuario pueda ejecutar el código usando python, únicamente se debe instalar el driver corresponediente a la versión de Google Chrome. Para instalar el driver puede consultar en la sección 'Uso de selenium' donde encontrará la página que se ha usado para obtener los drivers.
+Luego de esto, el código correrá sin problemas.
+Si lo prefiere, puede descargar el archivo de 'Releases' con el que obtendrá un archivo .exe para el sistema operativo Windows.
 
 ## Librerías usadas
 
