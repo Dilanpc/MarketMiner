@@ -408,7 +408,20 @@ El diagrama incluye las siguientes clases:
 Dentro del código HTML de las páginas a scrapear, cada sección que contenga información se agrupa por diferentes etiquetas, como h2, p, h3, etc. Las etiqutas marcan la estructura jerárquica de los encabezados y párrafos dentro de una página. Es importante mencionar que incluso la información contenida en tablas también posee sus respectivas etiquetas. Por ejemplo, en el caso de páginas como Wikipedia, los encabezados en negrilla poseen una etiqueta de tipo h2 y los párrafos etiquetas de tipo p. Cada etiqueta puede demarcar patrones comunes en la estructura de la página, que serán el objetivo principal para realizar la extracción de los datos. 
 Para realizar el scrapeo de las páginas, inicialmente se realizó la inspección del código HTML de los diferentes links, con el objetivo de buscar cada una de las etiquetas. Una vez encontrada una etiqueta de una sección de interés, se contrastó con las etiquetas de otras secciones para poder encontrar el patron que se mencionó anteriormente. Encontrando el patrón, se definieron métodos específicos para extraer la información asociada a cada etiqueta, y sobre ellos se fue diseñando el programa que se mostrará por partes a continuación. Se optó por dividir tanto el sistema de retail como el de wikis en diferentes ejecuciones, para poder trabajar en cada uno de manera específica. Además de esto, con MarketMiner se buscó un enfoque más comercial y dirigido a cualquier tipo de persona. Por lo que para esto se diseñó una interfaz que permitiese la interacción del programa de mejor manera para el usuario. Para el caso de WikiMiner, al ser de menor interés comercial, solo se realizó la ejecución mediante la consola. Sin embargo, no se descarta la implementación de los programas en una misma interfaz que brinde al usuario ambas alternativas. 
 
-Para el sistema dedicado a las páginas de retail se buscó plantear un programa que fuese capaz de...
+### Clase Page
+Para ingresar a las páginas de retail se crea la clase Page, que hereda de BeautifulSoup: Page recibe un link el cual abre usando la librería request o selenium según se requiera, con el objetivo final de obtener el código fuente de la página. Adicionalmente se redefinen los métodos find() y find_all() añadiendo la funcionalidad de búsqueda por etiquetas HTML.
+
+### Clase Product
+Esta clase que hereda de Page, está dirigida a manejar el código fuente obtenido para encontrar productos de páginas retail con los atributos y etiquetas HTML que se especifiquen. Su principal método search_products(), recibe un link, entra y guarda el código fuente usando la clase de la que hereda, Page, luego se encarga de buscar las secciones donde se puede obtener información de cada producto, las características de cada producto se buscan en la clase ProductCard, al final se obtiene una lista de objetos ProductCard que contienen el nombre, precio y link de cada producto.
+Una vez que se tenga la lista de ProductCards, la clase Product ofrece el método make_report() el cual crea un archivo csv o lo actualiza si ya existe con los productos que tiene guardados en su instancia. Es posible adicionar una ruta para un archivo csv de links.
+
+### Clase ProductCard
+Con el objetivo de guardar cada producto de forma en la que sea sencillo acceder a sus atributos se crea ProductCard, esta clase guarda el nombre, precio o link del producto y proporciona métodos para encontrar estos atributos en una sección del código HTML proporcionado en su inicialización. Para especificar qué atributos debe buscar, se diseñaron métodos que reciben listas de diccionarios, cada diccionario contine uno o varios atributos, y el método se encargará de buscar en el orden de la lista los atributos de cada diccionario, además, exite la opción de añadir atributos que si se encuentran, se descarta la sección.
+
+### Clases MercadoLibre, Exito y Linio
+Estas clases heredan de Product, su principal función es guardar los atributos que se necesitan para hallar cada producto en su respectiva página, estos datos se guardan en las variables __CARD_DATA, estos se usarán para redefinir _compute_products, la redefinición consiste en llamar a al método _compute_products de la clase padre, Product, usando de argumentos las variables __CARD_DATA.
+
+
 
 
 ### Clase WikiPage:
