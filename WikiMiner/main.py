@@ -4,7 +4,9 @@ from wikiminer.wikimovie import WikiMovie
 
 if __name__ == "__main__":
     # WIKIQUOTE
+    print("----------------------  WIKIQUOTE  ---------------------------")
     wiki_quote_page = WikiQuoteScience('https://es.wikiquote.org/wiki/Ciencia')  # Crear una instancia de WikiQuoteScience
+
     keywords = ["ciencia", "científico"]  # Definir las palabras clave a buscar
 
     print(wiki_quote_page.get_title())  # Imprimir el título de la página
@@ -22,10 +24,15 @@ if __name__ == "__main__":
     print(f"Total de autores encontrados: {len(authors)}")  # Imprimir la cantidad total de autores encontrados
 
 # WIKIPEDIA
-    wikipedia_page = Wikipedia('https://es.wikipedia.org/wiki/Lionel_Messi')
+    print("----------------------  WIKIPEDIA  ---------------------------")
+    wikipedia_page = Wikipedia('https://es.wikipedia.org/wiki/Real_Madrid_Club_de_Fútbol')
     
  # Definir la lista de palabras clave a buscar
-    keywords = ["Balón de Oro", "Balones de Oro"]
+    keywords = []
+    while True:
+        keywords.append(input("Ingrese una palabra clave: "))
+        if keywords[-1] == "salir":
+            break
     
     print(wikipedia_page.get_title())  
 
@@ -33,8 +40,13 @@ if __name__ == "__main__":
     wikipedia_page.find_keyword(keywords)
     
 # WIKIMOVIE
+    print("----------------------  WIKIMOVIE  ---------------------------")
+    link = input("Ingrese el enlace de la película en Wikipedia, vacio se usa oppenheimer: ")
+    if link == "":
+        movie = WikiMovie('https://es.wikipedia.org/wiki/Oppenheimer_(pel%C3%ADcula)')
+    else:
+        movie = WikiMovie(link)
 
-    movie = WikiMovie('https://es.wikipedia.org/wiki/Oppenheimer_(pel%C3%ADcula)')
     details = movie.get_movie_details()
     print("Título:", details['title'])
     print("Director:", details['director'])
