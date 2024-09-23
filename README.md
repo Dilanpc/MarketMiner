@@ -29,6 +29,7 @@
 ### Sitios Wiki:
   * [Wikiquote](https://es.wikiquote.org/wiki/Portada)
   * [Wikipedia](https://es.wikipedia.org/wiki/Wikipedia:Portada)
+  
     
 
 
@@ -177,10 +178,11 @@ classDiagram
    class WikiMovie{
 
 
-        + find_actors()
-+find_director()
-+find_movie_plot()
-+find_awards()
+        + get_title()
++get_actors()
++get_director()
++get_argument()
++get_movie_details()
 
     }
     
@@ -196,7 +198,7 @@ El diagrama incluye las siguientes clases:
 
 * WikiQuoteScience: También será una subclase de Wikipage y se enfocará en la búsqueda de citas científicas en la página WikiQuote. Los métodos find_quotes() y y find_author() permitirán extraer citas junto a los autores de las mismas.
 
-* WikiMovie: Esta clase será una clase hija de Wikipedia, y estará dedicada a la información sobre películas encontrada en dicha página. La idea es que permita, mediante los métodos definidos, encontrar los actores, directores, tramas y premios de las películas de interés que se busquen en la página principal de Wikipedia.
+* WikiMovie: Esta clase será una clase hija de Wikipedia, y estará dedicada a la información sobre películas encontrada en dicha página. La idea es que permita, mediante los métodos definidos, encontrar, el título de la película, los actores, director/es y argumento de la película de interés que se busquen en la página principal de Wikipedia.
    
 ### Diagrama de Clases Posible Interfaz:
 
@@ -282,7 +284,12 @@ class FrameResult{
 
 ```
 
+
 ## Abordaje de Solución:
+
+Para el sistema dedicado a las páginas de retail se buscó plantear un programa que fuese capaz de...
+
+Para el sistema dedicado a las páginas wiki, se 
 
 ## Instalación e Uso:
 
