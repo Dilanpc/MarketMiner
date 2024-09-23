@@ -162,7 +162,7 @@ classDiagram
         + page
         + soup: BeautifulSoup
 + get_tittle()
-+ get_paragraph()
+
     }
 
     class Wikipedia{
@@ -170,8 +170,10 @@ classDiagram
     }
 
     class WikiQuoteScience{
-        + find_quotes(keywords: list)
-+find_author(keywords: list)
+
+        + find_quotes_and_authors(keywords: list)
+- _filter_relevant_sections()
+
 
     }
 
