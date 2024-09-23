@@ -501,7 +501,7 @@ Aun así, no sobra destacar que alcanzando las semifinales, el Madrid ha llegado
 ``` 
 ### Clase WikiQuoteScience
 
-En tercer lugar, en el módulo wikiquote_sience se construyó la clase WikiQuoteScience, y se buscó que con los métodos definidos, se filtraran solo las secciones relevantes dentro de la página. Esto es debido a que 
+En tercer lugar, en el módulo wikiquote_sience se construyó la clase WikiQuoteScience, y se buscó que con los métodos definidos, se filtraran solo las secciones relevantes dentro de la página. Esto es debido a que la página Wiki Quotes define diferentes secciones de la página con las mismas etiquetas. En ese sentido, se usó un método encargado de quitar secciones como "Refranes y Dichos Populares" de los párrafos con las etiquetas correspondientes a las citas. Luego de esto, se definió un método encargado de recopilar todas las secciones de interés que además utilizara el filtro mencionado anteriormente. Cada cita encontrada dentro de la página, se imprime con su respectivo autor y con la palabra "ciencia" resaltada, para dar una muestra de cómo podría funcionar la ejecución por palabras clave como en el caso de Wikipedia. Es importante mencionar, que en el apartado de los autores, también se aplicó un filtro dentro del propio método para quitar algunas secciones que se registraban como parte del mismo. Algunas de estas, correspondían a secciones con links, como bloques de registro de usuario y ayuda. Finalmente, en caso de que se registren citas sin autor, se imprime la cita con un autor "anónimo". 
 
 ``` python
 """
@@ -572,10 +572,145 @@ class WikiQuoteScience(WikiPage):
 ```
 ### Ejecución
 
+En cuanto a la ejecución del programa, nuevamente se utilizan unas palabras claves, pero en este caso ya son definidas para realizar la prueba correspondiente. Esto es con el objetivo de brindar una aplicabilidad a la búsqueda de las citas. Posteriormente se ejecutan los métodos que entregan el título de la página y las citas con sus respectivos autores. Para comprobar que se estuviesen encontrando el número de citas y autores adecuado, se realizaron dos líneas de código encargadas de contar las citas y los autores encontrados. 
+``` python
+# WIKIQUOTE
+    print("----------------------  WIKIQUOTE  ---------------------------")
+    wiki_quote_page = WikiQuoteScience('https://es.wikiquote.org/wiki/Ciencia')  # Crear una instancia de WikiQuoteScience
+
+    keywords = ["ciencia", "científico"]  # Definir las palabras clave a buscar
+
+    print(wiki_quote_page.get_title())  # Imprimir el título de la página
+    
+    # Obtener las citas y autores
+    quotes, authors = wiki_quote_page.find_quotes_and_authors(keywords)
+    
+    # Imprimir cada cita con su respectivo autor
+    for quote, author in zip(quotes, authors):
+        print(f"{quote} - {author}")  # Imprimir cita y autor
+        print("-------------------------------------------------")
+        
+    # Contar citas y autores
+    print(f"Total de citas encontradas: {len(quotes)}")  # Imprimir la cantidad total de citas encontradas
+    print(f"Total de autores encontrados: {len(authors)}")  # Imprimir la cantidad total de autores encontrados
+```
+A continuación se observa la forma que debería tener la ejecución: 
+```
+----------------------  WIKIQUOTE  ---------------------------
+Ciencia - Wikiquote
+«A la ciencia hay que temerla: por un lado te cura la tos y por el otro te manda un avión a tu pueblo y te tira una bomba nuclear».[2]
+Gloria Fuertes - Gloria Fuertes
+-------------------------------------------------
+«A los hombres les encanta maravillarse: esa es la semilla de la ciencia». [3]
+Emerson - Emerson
+-------------------------------------------------
+«Cada conquista de la ciencia es una victoria del absurdo». [4]
+Jacques Monod - absurdo
+
+``` 
 ### Clase WikiMovie
 
+Por último lugar, en el módulo wikimovie.py, se construyó la clase WikiMovie. Esta es una clase hija de Wikipedia, pues la idea es que la información de las películas se busque dentro de la misma Wikipedia. Teniendo esto en cuenta, se definieron métodos encargados de analizar las tablas que contienen la información del director, título y actores de la película. Para cada uno de ellos, se buscó la etiqueta adecuada y definida dentro de la página en Wikipedia. Además de esto, se definió un método al final, encargado de recopilar los datos encontrados por los demás métodos. 
+
+``` python
+import requests  
+from bs4 import BeautifulSoup  
+
+from .wikipedia import Wikipedia  # Importa la clase WikiPage del módulo wiki_page
+
+class WikiMovie(Wikipedia):
+    def __init__(self, url):
+        super().__init__(url)
+    
+    def get_title(self, custom_soup=None):
+        # Usar el `soup` proporcionado si se pasa, o el `soup` de la instancia
+        soup = custom_soup if custom_soup else self.soup
+        title_element = soup.find('th', class_='cabecera cine')
+        return title_element.get_text(strip=True) if title_element else None
+    
+    def get_director(self, custom_soup=None):
+        soup = custom_soup if custom_soup else self.soup
+        director_element = soup.find('th', string='Dirección')
+        if director_element:
+            return director_element.find_next_sibling('td').get_text(strip=True)
+        return None
+
+    def get_actors(self, custom_soup=None):
+        soup = custom_soup if custom_soup else self.soup
+        actors_element = soup.find('th', string='Protagonistas')
+        if actors_element:
+            actors_list = actors_element.find_next_sibling('td').find_all('li')
+            return [actor.get_text(strip=True) for actor in actors_list]
+        return []
+
+    def get_argument(self, custom_soup=None):
+        soup = custom_soup if custom_soup else self.soup
+        argument_section = soup.find('h2', id='Argumento')
+        if argument_section:
+            argument_text = []
+            for sibling in argument_section.find_all_next():
+                if sibling.name == 'h2':
+                    break
+                if sibling.name == 'p':
+                    argument_text.append(sibling.get_text(strip=True))
+            return ' '.join(argument_text).strip() if argument_text else None
+        return None
+
+    def get_movie_details(self, custom_url=None):
+        if custom_url:
+            response = requests.get(custom_url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+        else:
+            soup = self.soup
+        
+        return {
+            'title': self.get_title(soup),
+            'director': self.get_director(soup),
+            'actors': self.get_actors(soup),
+            'argument': self.get_argument(soup),
+        }
+```
 ### Ejecución
 
+Para la ejecución de la clase WikiMovie, se probó de manera general con la página de Wikipedia para la película Oppenheimer. Sin embargo, se solicita al usuario un link en caso de que desee buscar una película en específico. Luego se ejecuta el método get_movie_details que va a retornar toda la información de la película.  
+
+``` python
+
+# WIKIMOVIE
+    print("----------------------  WIKIMOVIE  ---------------------------")
+    link = input("Ingrese el enlace de la película en Wikipedia, vacio se usa oppenheimer: ")
+    if link == "":
+        movie = WikiMovie('https://es.wikipedia.org/wiki/Oppenheimer_(pel%C3%ADcula)')
+    else:
+        movie = WikiMovie(link)
+
+    details = movie.get_movie_details()
+    print("Título:", details['title'])
+    print("Director:", details['director'])
+    print("Actores:")
+    for actor in details['actors']:
+        print("-", actor)
+    print("Argumento:", details['argument'])
+
+```
+De esta manera, la ejecución del código debería poseer la siguiente forma:
+
+``` 
+----------------------  WIKIMOVIE  ---------------------------
+Ingrese el enlace de la película en Wikipedia, vacio se usa oppenheimer:
+Título: Oppenheimer
+Director: Christopher Nolan
+Actores:
+- Cillian Murphy
+- Emily Blunt
+- Matt Damon
+- Florence Pugh
+- Josh Hartnett
+- Casey Affleck
+- Rami Malek
+- Kenneth Branagh
+Argumento: En 1926, el estudiante en doctorado de 22 añosJ. Robert Oppenheimersufre de nostalgia y ansiedad mientras estudia con el físico experimentalPatrick Blacketten elLaboratorio Cavendishde  laUniversidad de Cambridge...
+```
 
 ## Instalación e Uso:
 
