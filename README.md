@@ -405,6 +405,9 @@ El diagrama incluye las siguientes clases:
 
 ## Abordaje de Solución:
 
+Dentro del código HTML de las páginas a scrapear, cada sección que contenga información se agrupa por diferentes etiquetas, como <h2>, <p>, <h3>, etc. Las etiqutas marcan la estructura jerárquica de los encabezados y párrafos dentro de una página. Es importante mencionar que incluso la información contenida en tablas también posee sus respectivas etiquetas. Por ejemplo, en el caso de páginas como Wikipedia, los encabezados en negrilla poseen una etiqueta de tipo <h2> y los párrafos etiquetas de tipo <p>. Cada etiqueta puede demarcar patrones comunes en la estructura de la página, que serán el objetivo principal para realizar la extracción de los datos. 
+Para realizar el scrapeo de las páginas, inicialmente se realizó la inspección del código HTML de los diferentes links, con el objetivo de buscar cada una de las etiquetas. Una vez encontrada una etiqueta de una sección de interés, se contrastó con las etiquetas de otras secciones para poder encontrar el patron que se mencionó anteriormente. Encontrando el patrón, se definieron métodos específicos para extraer la información asociada a cada etiqueta, y sobre ellos se fue diseñando el programa que se mostrará por partes a continuación. Se optó por dividir tanto el sistema de retail como el de wikis en diferentes ejecuciones, para poder trabajar en cada uno de manera específica. Además de esto, con MarketMiner se buscó un enfoque más comercial y dirigido a cualquier tipo de persona. Por lo que para esto se diseñó una interfaz que permitiese la interacción del programa de mejor manera para el usuario. Para el caso de WikiMiner, al ser de menor interés comercial, solo se realizó la ejecución mediante la consola. Sin embargo, no se descarta la implementación de los programas en una misma interfaz que brinde al usuario ambas alternativas. 
+
 Para el sistema dedicado a las páginas de retail se buscó plantear un programa que fuese capaz de...
 
 
@@ -499,7 +502,7 @@ Sin embargo, perdió la Supercopa de España por 3-1 frente al F. C. Barcelona e
 Aun así, no sobra destacar que alcanzando las semifinales, el Madrid ha llegado a 11 de las últimas 13 semifinales de la Champions League.
 
 ``` 
-### Clase WikiQuoteScience
+### Clase WikiQuoteScience:
 
 En tercer lugar, en el módulo wikiquote_sience se construyó la clase WikiQuoteScience, y se buscó que con los métodos definidos, se filtraran solo las secciones relevantes dentro de la página. Esto es debido a que la página Wiki Quotes define diferentes secciones de la página con las mismas etiquetas. En ese sentido, se usó un método encargado de quitar secciones como "Refranes y Dichos Populares" de los párrafos con las etiquetas correspondientes a las citas. Luego de esto, se definió un método encargado de recopilar todas las secciones de interés que además utilizara el filtro mencionado anteriormente. Cada cita encontrada dentro de la página, se imprime con su respectivo autor y con la palabra "ciencia" resaltada, para dar una muestra de cómo podría funcionar la ejecución por palabras clave como en el caso de Wikipedia. Es importante mencionar, que en el apartado de los autores, también se aplicó un filtro dentro del propio método para quitar algunas secciones que se registraban como parte del mismo. Algunas de estas, correspondían a secciones con links, como bloques de registro de usuario y ayuda. Finalmente, en caso de que se registren citas sin autor, se imprime la cita con un autor "anónimo". 
 
