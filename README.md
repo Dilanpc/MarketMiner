@@ -200,87 +200,205 @@ El diagrama incluye las siguientes clases:
 
 * WikiMovie: Esta clase será una clase hija de Wikipedia, y estará dedicada a la información sobre películas encontrada en dicha página. La idea es que permita, mediante los métodos definidos, encontrar, el título de la película, los actores, director/es y argumento de la película de interés que se busquen en la página principal de Wikipedia.
    
-### Diagrama de Clases Posible Interfaz:
+### Diagrama de Clases de Interfaz:
 
 ```mermaid
+   classDiagram
+    QMainWindow <|-- Interface
+    Interface *-- QTabWidget
+    QTabWidget *-- MarketMinerTab
+    QTabWidget *-- ReportsTab
+    MarketMinerTab *-- Header
+    MarketMinerTab *-- FrameShops
+    FrameShops *-- Shop
+    Shop *-- SearchTread
+    Shop *-- ProductInfo
+    Shop *-- Results
+    Results *-- ProductButton
 
-classDiagram
-    Interface "1" *--  FrameHome
-   FrameHome *-- FrameMenuShops
-   FrameHome *-- FrameInfoShop
-   FrameInfoShop *-- FrameResult
-   Tk <|-- Interface
-   Frame <|-- FrameHome
-   Frame <|-- FrameMenuShops
-   Frame <|-- FrameInfoShop
-   Frame <|-- FrameResult
-   
-   
+    ReportsTab *--ReportHeader
+    ReportsTab *-- ReportList
+    ReportList *-- ReportCard
+    ReportCard *-- ReportThread
+    ReportsTab *-- ReportInfo
+    ReportInfo *-- ReportInfoList
+    ReportInfoList *-- ReportInfoCard
 
- class Tk{
+
+    class QMainWindow{
+
     }
-
- class Frame{
-    }
-
     class Interface{
-        + title
-        + geometry
-        + frame: FrameHome
+        + app: QApplication
+        + tabs: QTabWidget
+        + reportManager
+        + exec()
     }
 
-    class FrameHome{
-        + master
-        + frame_menu: FrameMenuShops
-        + frame_info
-
-        + show_info(page_name, color)
-    }
-
-    class FrameMenuShops{
-        + master: FrameHome
-+ labels
-+ buttons: list
-+ info
-
-+ _show_buttons()
+    class QTabWidget{
 
     }
 
-class FrameInfoShop{
-        + master
-        + result
-        + __BG
-        + page
-        + search_input
-        + load_label
-        + button_search
-
-        + __search_web(class_name)
-+ search()
-+ __ search_thread()
-+ __loading()
+    class MarketMinerTab{
+        + header: Header
+        + frameShops: FrameShops
+        + searchButtonState()
+        + sort_by_price()
     }
 
-class FrameResult{
-        + master
-+ data
-+ label
-+ canvas
-+ scrollbar
-+ inner_frame
-+ buttons
-+ canvas_frame
-      
-+ __on_frame_configure(event)
-+ __on_canvas_configure(event)
-+ _calculate_buttons()
-+ _show_buttons()
-+ _go_to_link(link)
+    class Header{
+        + tittle: QLabel
+        + entry: QLineEdit
+        + button: QPushButton
+        + sorted: QCheckBox
+        + seacrh()
     }
 
- 
-   
+    class FrameShops{
+        + mercadoShop: Shop
+        + exitoShop: Shop
+        + linioShop: Shop
+        + shops: list[Shop]
+        + search()
+        + reactivateButton()
+        + sort_by_price()
+    }
+
+    class Shop{
+        + tittle: QLabel
+        + ecommerce: Product
+        - loading: bool
+        - sorted: bool
+        + results: Results
+        + last_query
+        + product_info: ProductInfo
+        + thread: SearchTread
+        + setTittle()
+        + setEcommerce()
+        + updateProducts()
+        + print_products()
+        + get_products()
+        + sort_by_price()
+        + clearWidget()
+        + showProduct()
+        + hideProduct()
+    }
+
+    class SearchTread{
+        + ready: Signal
+        + run()
+    }
+
+    class Results{
+        + buttons: list[ProductButton]
+        + widget: QWidget
+        + layout: QVBoxLayout
+        + updateButtons()
+        + clear()
+        + noResults()
+        + showProduct()
+        + hideProduct()
+    }
+
+    class ProductButton{
+        + product: ProductCard
+    }
+
+    class ProductInfo{
+        + name: QLabel
+        + QPrice: QLabel
+        + link: QPushButton
+        + closeButton: QPushButton
+        + setProduct()
+        + openLink()
+    }
+
+
+
+    class ReportsTab{
+        + reportManager: ReportManager
+        + mainWidget: QWidget
+        + reportList: reportList
+        + header: ReportHeader
+        + info: ReportInfo
+        + hideReportInfo()
+    }
+
+    class ReportHeader{
+        + reportsManager: ReportManager
+        + reportList: ReportList
+        + tittle: QLabel
+        + nameEntry: QLineEdit
+        + queryEntry: QLineEdit
+        + classEntry: QComboBox
+        + addbtn: QPushButton
+        + addReport()
+
+    }
+
+    class ReportList{
+        + widget: QWidget
+        + cards: list[ReportCard]
+        + layout: QVBoxLayout
+        + updateCards()
+        + addCard()
+        + clear()
+    }
+
+    class ReportCard{
+        + reportUi: ReportsTab
+        + report: Report
+        + tittle: QLabel
+        + query: QLabel
+        + class_: QLabel
+        + path: QLabel
+        + startbtn: QPushButton
+        + infobtn: QPushButton
+        + layout: QGridLayout
+        + run()
+        + reportFinished()
+        + showInfo()
+
+    }
+
+
+    class ReportThread{
+        + ready: Signal
+        + run()
+    }
+
+    class ReportInfo{
+        + reportUi: ReportTab
+        + report: Report
+        + closebtn: QPushButton
+        + tittle: QLabel
+        + query: QLabel
+        + list: ReportInfoList
+        + layout: QGridLayout
+        + setReport()
+    }
+
+
+    class ReportInfoList{
+        + data: list[list[str]]
+        + widget: QWidget
+        + layout: QVBoxLayout
+        + cards: list[ReportInfoCard]
+        + load_data()
+        + updateCards()
+        + clear()
+    }
+
+
+    class ReportInfoCard{
+        + name: startbtn
+        + dates: list[float]
+        + namelabel: QLabel
+        + showbtn: QPushButton
+        + layout: QHBoxLayout
+        - graph()
+    }
+  
 
 ```
 
