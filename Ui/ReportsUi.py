@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (QWidget, QFrame, QVBoxLayout, QHBoxLayout, QGridL
 from PySide6.QtCore import QThread, Signal, Qt
 
 from MarketMiner.reporter import ReportManager
-
+from .grapher import Grapher
 
 
 class ReportHeader(QWidget):
@@ -409,7 +409,10 @@ class ReportInfoCard(QFrame):
         super().__init__(parent)
         self.name = data[0]
         self.dates = dates[1:]
-        self.data = data[1:]
+        try:
+            self.data = [float(txt) for txt in data[1:]]
+        except:
+            self.data =['N/A' for txt in data[1:]]
 
         self.setSizePolicy(QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Maximum))
         self.setStyleSheet("""
@@ -450,12 +453,17 @@ class ReportInfoCard(QFrame):
                 background-color: #888;
             }
             """)
+        self.showbtn.clicked.connect(self._graph)
         
 
         self.layout = QHBoxLayout(self)
         self.layout.addWidget(self.nameLabel)
         self.layout.addWidget(self.showbtn)
 
+    def _graph(self):
+        graph = Grapher(self.data, self.dates)
+        graph.graph(label=self.name)
+        graph.show(block=False)
 
         
         
