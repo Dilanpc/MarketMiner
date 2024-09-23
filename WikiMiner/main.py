@@ -32,6 +32,7 @@ if __name__ == "__main__":
     while True:
         keywords.append(input("Ingrese una palabra clave: "))
         if keywords[-1] == "salir":
+            keywords.pop()
             break
     
     print(wikipedia_page.get_title())  
