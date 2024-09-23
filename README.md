@@ -289,7 +289,68 @@ class FrameResult{
 
 Para el sistema dedicado a las páginas de retail se buscó plantear un programa que fuese capaz de...
 
-Para el sistema dedicado a las páginas wiki, se 
+
+### Clase WikiPage:
+Para el sistema dedicado a las páginas wiki, se definieron las clases que se plantearon en el diagrama de clases, con sus respectivos métodos y atributos. En primer lugar, dentro del módulo wiki_page.py se construyó la clase WikiPage, que será la clase padre que busca abstraer a una página Wiki en general. La clase recibe como atributo un link que dirige a la página wiki que se va a instanciar, y define un método que entrega el título de la página. Utilizando las librerías Requests y BeautifulSoup, se registra como txto el HTML de la página para poder parsearla (analizar una cadena de texto para identificar y extraer la información de interés). Esta clase será la encargada de heredar el atributo de URL y el método get_title a las demás clases hijas (WikiQuoteScience y Wikipedia)
+
+``` python
+"""
+Módulo que contiene la clase WikiPage e importa las bibliotecas necesarias.
+
+"""
+
+import requests  # Importa la biblioteca requests para realizar peticiones HTTP
+from bs4 import BeautifulSoup  # Importa BeautifulSoup para el análisis de HTML
+
+# Clase Padre que representa una página tipo Wiki y define atributos y métodos comunes
+class WikiPage:
+    def __init__(self, url):  # Constructor que inicializa la URL y realiza la petición a la página
+        self.url = url  # Asignar la URL proporcionada a la instancia
+        self.page = requests.get(url)  # Hacer la solicitud HTTP para obtener el contenido de la página
+        # Parsear el contenido HTML de la página utilizando BeautifulSoup
+        self.soup = BeautifulSoup(self.page.text, 'html.parser') 
+    
+    # Método que obtiene el título de la página web    
+    def get_title(self):
+        return self.soup.title.text  # Retorna el texto del título de la página
+
+```
+
+### Clase Wikipedia:
+
+En segundo lugar, dentro del módulo wikipedia.py se construyó la clase Wikipedia, que es una clase hija de WikiPage y hereda el atributo que define al link de la página. Como el objetivo del sistema que scrapea las páginas de Wikipedia es permitir al usuario la búsqueda de la información de interés con la ayuda del filtrado por palabras clave, se definió un método find_keywords. Este método se encargará de recibir las palabras clave que ingrese el usuario y recorrer los diferentes párrafos de la página para buscar dentro de ellos, los que contengan a las palabras digitadas por el usuario
+
+
+``` python
+"""
+Módulo que contiene la clase Wikipedia que hereda de WikiPage.
+"""
+
+from .wiki_page import WikiPage  # Importa la clase WikiPage del módulo wiki_page
+
+class Wikipedia(WikiPage):
+    def __init__(self, url):
+        super().__init__(url)  
+ 
+    def find_keyword(self, keywords):
+        for paragraph in self.soup.select('p'):  # Selecciona todos los párrafos en la página
+            # Comprobar si alguna de las palabras clave está en el texto del párrafo
+            for keyword in keywords:
+                if keyword.lower() in paragraph.text.lower():  # Si se encuentra palabra clave está en el párrafo se imprime el párrafo
+                    print(paragraph.text)  
+                    print("-------------------------------------------------") 
+                    break  # Salir del bucle de palabras clave si se encontró una coincidencia
+```
+### Ejecución
+
+### Clase WikiQuoteScience
+
+### Ejecución
+
+### Clase WikiMovie
+
+### Ejecución
+
 
 ## Instalación e Uso:
 
